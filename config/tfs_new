@@ -1,0 +1,1006 @@
+-- MySQL Administrator dump 1.4
+--
+-- ------------------------------------------------------
+-- Server version	5.5.29
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+
+
+--
+-- Create schema toysforshots
+--
+
+CREATE DATABASE IF NOT EXISTS toysforshots;
+USE toysforshots;
+
+--
+-- Definition of table `cb_author`
+--
+
+DROP TABLE IF EXISTS `cb_author`;
+CREATE TABLE `cb_author` (
+  `authorID` int(11) NOT NULL AUTO_INCREMENT,
+  `firstName` varchar(100) NOT NULL,
+  `lastName` varchar(100) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `username` varchar(100) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `isActive` bit(1) NOT NULL DEFAULT b'0',
+  `lastLogin` datetime DEFAULT NULL,
+  `createdDate` datetime NOT NULL,
+  `biography` longtext,
+  `preferences` longtext,
+  `FK_roleID` int(11) NOT NULL,
+  PRIMARY KEY (`authorID`),
+  UNIQUE KEY `username` (`username`),
+  KEY `FK6847396B9724FA40` (`FK_roleID`),
+  KEY `idx_active` (`isActive`),
+  KEY `idx_email` (`email`),
+  KEY `idx_login` (`username`,`password`,`isActive`),
+  CONSTRAINT `FK6847396B9724FA40` FOREIGN KEY (`FK_roleID`) REFERENCES `cb_role` (`roleID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_author`
+--
+
+/*!40000 ALTER TABLE `cb_author` DISABLE KEYS */;
+INSERT INTO `cb_author` (`authorID`,`firstName`,`lastName`,`email`,`username`,`password`,`isActive`,`lastLogin`,`createdDate`,`biography`,`preferences`,`FK_roleID`) VALUES 
+ (1,'Dan','Vega','danvega@gmail.com','cfaddict','0209AB2293D6E16C579C21782D9C02DA2D54178C69C271B540EE5EA42029A216',0x01,'2013-10-15 22:10:21','2013-09-21 17:32:50','','{\"sidebarstate\":true}',2),
+ (2,'Katie','Vega','Kathleenvega17@gmail.com','kvega','5E884898DA28047151D0E56F8DC6292773603D0D6AABBDD62A11EF721D1542D8',0x01,NULL,'2013-09-22 21:37:30','','{}',1),
+ (3,'Angelo','Lardomita','angelo@ajdesigncompany.com','alardomita','5E884898DA28047151D0E56F8DC6292773603D0D6AABBDD62A11EF721D1542D8',0x01,NULL,'2013-09-22 21:38:28','','{}',1);
+/*!40000 ALTER TABLE `cb_author` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_authorpermissions`
+--
+
+DROP TABLE IF EXISTS `cb_authorpermissions`;
+CREATE TABLE `cb_authorpermissions` (
+  `FK_authorID` int(11) NOT NULL,
+  `FK_permissionID` int(11) NOT NULL,
+  KEY `FKE167E219AA6AC0EA` (`FK_authorID`),
+  KEY `FKE167E21937C1A3F2` (`FK_permissionID`),
+  CONSTRAINT `FKE167E21937C1A3F2` FOREIGN KEY (`FK_permissionID`) REFERENCES `cb_permission` (`permissionID`),
+  CONSTRAINT `FKE167E219AA6AC0EA` FOREIGN KEY (`FK_authorID`) REFERENCES `cb_author` (`authorID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_authorpermissions`
+--
+
+/*!40000 ALTER TABLE `cb_authorpermissions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cb_authorpermissions` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_category`
+--
+
+DROP TABLE IF EXISTS `cb_category`;
+CREATE TABLE `cb_category` (
+  `categoryID` int(11) NOT NULL AUTO_INCREMENT,
+  `category` varchar(200) NOT NULL,
+  `slug` varchar(200) NOT NULL,
+  PRIMARY KEY (`categoryID`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `idx_slug` (`slug`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_category`
+--
+
+/*!40000 ALTER TABLE `cb_category` DISABLE KEYS */;
+INSERT INTO `cb_category` (`categoryID`,`category`,`slug`) VALUES 
+ (1,'Donations','donations'),
+ (2,'Volunteers','volunteers'),
+ (3,'2013','2013'),
+ (4,'facebook','facebook');
+/*!40000 ALTER TABLE `cb_category` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_comment`
+--
+
+DROP TABLE IF EXISTS `cb_comment`;
+CREATE TABLE `cb_comment` (
+  `commentID` int(11) NOT NULL AUTO_INCREMENT,
+  `content` longtext NOT NULL,
+  `author` varchar(100) NOT NULL,
+  `authorIP` varchar(100) NOT NULL,
+  `authorEmail` varchar(255) NOT NULL,
+  `authorURL` varchar(255) DEFAULT NULL,
+  `createdDate` datetime NOT NULL,
+  `isApproved` bit(1) NOT NULL DEFAULT b'0',
+  `FK_contentID` int(11) NOT NULL,
+  PRIMARY KEY (`commentID`),
+  KEY `FKFFCED27F91F58374` (`FK_contentID`),
+  KEY `idx_approved` (`isApproved`),
+  KEY `idx_contentComment` (`isApproved`,`FK_contentID`),
+  KEY `idx_createdDate` (`createdDate`),
+  CONSTRAINT `FKFFCED27F91F58374` FOREIGN KEY (`FK_contentID`) REFERENCES `cb_content` (`contentID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_comment`
+--
+
+/*!40000 ALTER TABLE `cb_comment` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cb_comment` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_content`
+--
+
+DROP TABLE IF EXISTS `cb_content`;
+CREATE TABLE `cb_content` (
+  `contentID` int(11) NOT NULL AUTO_INCREMENT,
+  `contentType` varchar(255) NOT NULL,
+  `title` varchar(200) NOT NULL,
+  `slug` varchar(200) NOT NULL,
+  `createdDate` datetime NOT NULL,
+  `publishedDate` datetime DEFAULT NULL,
+  `expireDate` datetime DEFAULT NULL,
+  `isPublished` bit(1) NOT NULL DEFAULT b'1',
+  `allowComments` bit(1) NOT NULL DEFAULT b'1',
+  `passwordProtection` varchar(100) DEFAULT NULL,
+  `HTMLKeywords` varchar(160) DEFAULT NULL,
+  `HTMLDescription` varchar(160) DEFAULT NULL,
+  `hits` bigint(20) DEFAULT '0',
+  `cache` bit(1) NOT NULL DEFAULT b'1',
+  `cacheLayout` bit(1) NOT NULL DEFAULT b'1',
+  `cacheTimeout` int(11) DEFAULT '0',
+  `cacheLastAccessTimeout` int(11) DEFAULT '0',
+  `markup` varchar(100) NOT NULL DEFAULT 'HTML',
+  `FK_authorID` int(11) NOT NULL,
+  `FK_parentID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`contentID`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `FKFFE01899AA6AC0EA` (`FK_authorID`),
+  KEY `FKFFE018996FDC2C99` (`FK_parentID`),
+  KEY `idx_slug` (`slug`),
+  KEY `idx_cachelayout` (`cacheLayout`),
+  KEY `idx_discriminator` (`contentType`),
+  KEY `idx_cachetimeout` (`cacheTimeout`),
+  KEY `idx_cache` (`cache`),
+  KEY `idx_publishedSlug` (`slug`,`isPublished`),
+  KEY `idx_published` (`contentType`,`isPublished`,`passwordProtection`),
+  KEY `idx_publishedDate` (`publishedDate`),
+  KEY `idx_cachelastaccesstimeout` (`cacheLastAccessTimeout`),
+  KEY `idx_createdDate` (`createdDate`),
+  KEY `idx_expireDate` (`expireDate`),
+  KEY `idx_search` (`title`,`isPublished`),
+  CONSTRAINT `FKFFE018996FDC2C99` FOREIGN KEY (`FK_parentID`) REFERENCES `cb_content` (`contentID`),
+  CONSTRAINT `FKFFE01899AA6AC0EA` FOREIGN KEY (`FK_authorID`) REFERENCES `cb_author` (`authorID`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_content`
+--
+
+/*!40000 ALTER TABLE `cb_content` DISABLE KEYS */;
+INSERT INTO `cb_content` (`contentID`,`contentType`,`title`,`slug`,`createdDate`,`publishedDate`,`expireDate`,`isPublished`,`allowComments`,`passwordProtection`,`HTMLKeywords`,`HTMLDescription`,`hits`,`cache`,`cacheLayout`,`cacheTimeout`,`cacheLastAccessTimeout`,`markup`,`FK_authorID`,`FK_parentID`) VALUES 
+ (1,'Page','Home','home','2013-09-21 19:02:17','2013-09-21 19:00:00',NULL,0x01,0x00,'','','',205,0x01,0x01,0,0,'HTML',1,NULL),
+ (2,'Page','About','about','2013-09-21 19:03:31','2013-09-21 19:03:00',NULL,0x01,0x00,'','','',62,0x01,0x01,0,0,'HTML',1,NULL),
+ (3,'Page','Donate','donate','2013-09-21 19:18:54','2013-09-21 19:08:00',NULL,0x01,0x00,'','','',37,0x01,0x01,0,0,'HTML',1,NULL),
+ (5,'Page','Raffle','raffle','2013-09-21 21:26:52','2013-09-21 21:21:00',NULL,0x01,0x00,'','','',33,0x01,0x01,0,0,'HTML',1,NULL),
+ (6,'Page','Media','media','2013-09-21 21:32:50','2013-09-21 21:32:00',NULL,0x01,0x00,'','','',24,0x01,0x01,0,0,'HTML',1,NULL),
+ (7,'Page','RSVP','rsvp','2013-09-21 21:37:01','2013-09-21 21:34:00',NULL,0x01,0x00,'','','',26,0x01,0x01,0,0,'HTML',1,NULL),
+ (8,'Page','Thank You','thank-you','2013-09-21 21:41:33','2013-09-21 21:40:00',NULL,0x01,0x00,'','','',19,0x01,0x01,0,0,'HTML',1,NULL),
+ (9,'Page','Contact','contact','2013-09-21 21:42:46','2013-09-21 21:42:00',NULL,0x01,0x00,'','','',49,0x01,0x01,0,0,'HTML',1,NULL),
+ (11,'ContentStore','Right Sidebar','right-sidebar','2013-09-22 11:20:44','2013-09-22 11:13:00',NULL,0x01,0x00,'','','',0,0x01,0x01,0,0,'HTML',1,NULL),
+ (12,'ContentStore','Slider','slider','2013-09-22 11:57:11','2013-09-22 11:55:00',NULL,0x01,0x00,'','','',0,0x01,0x01,0,0,'HTML',1,NULL),
+ (13,'Entry','Toys For Shots Facebook Page','toys-for-shots-facebook-page','2013-09-22 21:47:25','2013-09-22 21:41:00',NULL,0x01,0x01,'','','',0,0x01,0x01,0,0,'HTML',1,NULL);
+/*!40000 ALTER TABLE `cb_content` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_contentcategories`
+--
+
+DROP TABLE IF EXISTS `cb_contentcategories`;
+CREATE TABLE `cb_contentcategories` (
+  `FK_contentID` int(11) NOT NULL,
+  `FK_categoryID` int(11) NOT NULL,
+  KEY `FKD96A0F95F10ECD0` (`FK_categoryID`),
+  KEY `FKD96A0F9591F58374` (`FK_contentID`),
+  CONSTRAINT `FKD96A0F9591F58374` FOREIGN KEY (`FK_contentID`) REFERENCES `cb_content` (`contentID`),
+  CONSTRAINT `FKD96A0F95F10ECD0` FOREIGN KEY (`FK_categoryID`) REFERENCES `cb_category` (`categoryID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_contentcategories`
+--
+
+/*!40000 ALTER TABLE `cb_contentcategories` DISABLE KEYS */;
+INSERT INTO `cb_contentcategories` (`FK_contentID`,`FK_categoryID`) VALUES 
+ (13,3),
+ (13,4);
+/*!40000 ALTER TABLE `cb_contentcategories` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_contentstore`
+--
+
+DROP TABLE IF EXISTS `cb_contentstore`;
+CREATE TABLE `cb_contentstore` (
+  `contentID` int(11) NOT NULL,
+  `description` longtext,
+  PRIMARY KEY (`contentID`),
+  KEY `FKEA4C67C8C960893B` (`contentID`),
+  CONSTRAINT `FKEA4C67C8C960893B` FOREIGN KEY (`contentID`) REFERENCES `cb_content` (`contentID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_contentstore`
+--
+
+/*!40000 ALTER TABLE `cb_contentstore` DISABLE KEYS */;
+INSERT INTO `cb_contentstore` (`contentID`,`description`) VALUES 
+ (11,'The Right sidebar that is on some of the pages.'),
+ (12,'Home Page Slider');
+/*!40000 ALTER TABLE `cb_contentstore` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_contentversion`
+--
+
+DROP TABLE IF EXISTS `cb_contentversion`;
+CREATE TABLE `cb_contentversion` (
+  `contentVersionID` int(11) NOT NULL AUTO_INCREMENT,
+  `content` longtext NOT NULL,
+  `changelog` longtext,
+  `version` int(11) NOT NULL,
+  `createdDate` datetime NOT NULL,
+  `isActive` bit(1) NOT NULL DEFAULT b'0',
+  `FK_authorID` int(11) NOT NULL,
+  `FK_contentID` int(11) NOT NULL,
+  PRIMARY KEY (`contentVersionID`),
+  KEY `FKE166DFFAA6AC0EA` (`FK_authorID`),
+  KEY `FKE166DFF91F58374` (`FK_contentID`),
+  KEY `idx_active` (`isActive`),
+  KEY `idx_contentVersions` (`isActive`,`FK_contentID`),
+  KEY `idx_version` (`version`),
+  KEY `idx_createdDate` (`createdDate`),
+  CONSTRAINT `FKE166DFF91F58374` FOREIGN KEY (`FK_contentID`) REFERENCES `cb_content` (`contentID`),
+  CONSTRAINT `FKE166DFFAA6AC0EA` FOREIGN KEY (`FK_authorID`) REFERENCES `cb_author` (`authorID`)
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_contentversion`
+--
+
+/*!40000 ALTER TABLE `cb_contentversion` DISABLE KEYS */;
+INSERT INTO `cb_contentversion` (`contentVersionID`,`content`,`changelog`,`version`,`createdDate`,`isActive`,`FK_authorID`,`FK_contentID`) VALUES 
+ (1,'<p>Toys for Shots is an annual fundraiser/holiday party. The primary purpose of this very special event is to collect as many new, un-giftwrapped toys as we can for the Marine\'s Toys for Tots program. A couple of representatives from the Marines will be present at the event to collect all the donated toys. In keeping with the true spirit of the holidays, your gift of a toy(s) can spread so much joy and hope to a deserving Cleveland area child this Christmas. Last year we were able to collect 16 huge boxes of toys and hope to break that record this year! The Marine\'s will be prepared with a large truck this year to fit all the toys we expect to donate!</p>\r\n\r\n<p>Why the name, \"Toys for Shots\"? We thought it would entice folks to go out and buy a toy if we offered a free drink in return for their toy (1 toy for 1 shot...\"Toys for Shots\"). The idea worked and we are happy to offer it again this year. Bring at least one new, un-giftwrapped toy and we will give you a free drink ticket.</p>\r\n\r\n<p>Although our purpose is to provide a bit of holiday happiness to children in need, this event is a holiday party! Expect to dance and have a good time, mingle with the crowd, have some holiday cheer, enjoy the food and participate in the raffle. We have an awesome lineup of baskets and items to be raffled off this year, so be sure to bring a few extra bucks to purchase the chinese raffle tickets!</p>\r\n\r\n<p>This will mark the fifth year for this event and we have some very high expectations. The event itself has grown each year in donations, gifts and attendance. This year the planning committee is made up of more than twenty people. Not only are we planning on delivering the best Toys for Shots event yet, but we expect this to grow into one of Northeast Ohio\'s biggest toy drives. We hope you will join us for an amazing night on December 08, 2012.</p>\r\n','initial commit',1,'2013-09-21 19:02:17',0x00,1,1),
+ (2,'<h1>About The Party</h1>\r\n\r\n<p><strong>Who:</strong> Anyone interested in having fun and helping out a good cause.<br />\r\n<strong>What:</strong> Toys for Tots Fundraiser Christmas Party.<br />\r\n<strong>Where:</strong> <a href=\"http://windowsontheriver.com\">Windows on the River</a><br />\r\n<strong>When:</strong> Saturday December 08, 2012 / 7:00 PM - 12:00 AM<br />\r\n<br />\r\n<cfoutput> <strong>Windows on the River</strong></cfoutput></p>\r\n\r\n<p>2000 Sycamore<br />\r\nCleveland OH 44113<br />\r\nPhone: 216.861.1445<br />\r\nWebsite: <a href=\"http://windowsontheriver.com\">Windows on the River</a></p>\r\n\r\n<p><strong>About The party</strong></p>\r\n\r\n<p>&nbsp;\r\n<p>&nbsp;\r\n<p>Windows on the River is located on the west bank of the Flats in downtown Cleveland, OH, on the second and third floors of the prestigious FirstEnergy Powerhouse building. The event will be held in the river room which is located on the second floor at the far end of the building. After you park and you are walking towards the building you will see a red awning. This is the entrance to the river room and at that point you should see signs for the event. This will be a private event, please <a href=\"#event.buildLink(\'rsvp\')#\">RSVP</a> so we have a accurate guest list and an idea of how many people are coming. If you bring a toy or check we will give you 2 drink tickets. This will hopefully encourage everyone to <a href=\"#event.buildLink(\'donate\')#\">bring a donation</a> to this wonderful cause. If you don\'t bring a toy there will be a $10.00 donation cover charge.</p>\r\n<strong>Chinese Auction</strong></p>\r\n</p>\r\n\r\n<p>The difference between a raffle and a Chinese auction is that in a raffle with multiple prizes, there is one \"hat\" from which names are drawn, but in a Chinese auction each prize has its own \"hat\". This allows ticket buyers to choose which prize to focus on, as opposed to having a first, second, third, etc. prize.</p>\r\n\r\n<p>We are looking for <a href=\"#event.buildLink(\'donate\')#\">raffle prize donations</a> to help make this event a smash. We have some ideas for raffle baskets but if you have ideas please let us know. You can find out what raffle prizes have already been donated by <a href=\"#event.buildLink(\'raffle\')#\">visiting the raffle page</a>.</p>\r\n\r\n<p><strong>Entertainment</strong></p>\r\n\r\n<p>&nbsp;\r\n<p>&nbsp;\r\n<p>The private party room will have a DJ making it impossible to be bored.</p>\r\n<strong>Dancers</strong></p>\r\n</p>\r\n\r\n<p>&nbsp;\r\n<p>&nbsp;\r\n<p>Rock City Dance Studio will be performing a special dance routine choreographed by Jayj Graham.<br />\r\n<a href=\"http://www.rockcitydance.com\">www.rockcitydance.com</a></p>\r\n<strong>Photo Booth &amp; Photographer</strong></p>\r\n</p>\r\n\r\n<p>&nbsp;\r\n<p>&nbsp;\r\n<p>We will have a photo booth for you to take pictures with your friends. We will also have a photographer walking around the event capturing everything.</p>\r\n</p>\r\n</p>\r\n\r\n<p>&nbsp;</p>\r\n','initial commit',1,'2013-09-21 19:03:31',0x00,1,2),
+ (3,'<h1>Make A Donation</h1>\r\n\r\n<p>We have a many options for taking donations. Anything you can do to help out would not only be a great help to me but you would also be doing something good for a great cause. There is no donation to small, every little bit helps!</p>\r\n\r\n<p><strong>Making a Donation</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>If you would like to make a cash donation please click on the donate button below. Your donation will go towards raffle prizes or helping us cover the cost of running the event. Thank you for your support.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<form action=\"https://www.paypal.com/cgi-bin/webscr\" method=\"post\" target=\"_blank\"><input name=\"cmd\" type=\"hidden\" value=\"_donations\" /> <input name=\"business\" type=\"hidden\" value=\"danvega@gmail.com\" /> <input name=\"lc\" type=\"hidden\" value=\"US\" /> <input name=\"item_name\" type=\"hidden\" value=\"Toys For Shots\" /> <input name=\"no_note\" type=\"hidden\" value=\"0\" /> <input name=\"currency_code\" type=\"hidden\" value=\"USD\" /> <input name=\"bn\" type=\"hidden\" value=\"PP-DonationsBF:btn_donateCC_LG.gif:NonHostedGuest\" /> <input alt=\"PayPal - The safer, easier way to pay online!\" border=\"0\" name=\"submit\" src=\"https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif\" type=\"image\" /> <img alt=\"\" border=\"0\" height=\"1\" src=\"https://www.paypalobjects.com/en_US/i/scr/pixel.gif\" width=\"1\" /></form>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p><br />\r\n<strong>Attending the Party</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>If you are attending the party you can either bring a toy or a donation. If you bring a toy we ask that you bring them unwrapped. Please make sure the toy is not a weapon or any type of projectile. If you would like to give a cash donation please make your check out to \"Marine Toys for Tots Foundation\" or just \"Toys for Tots\".</p>\r\n\r\n<p><strong>Raffle Prizes</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>We are going to hold a prize raffle at the door along with a Chinese auction. All of the raffle ticket money will also be donated to the Toys for Tots program. We need as many raffle prizes as we can get our hands on to make sure people are buying tickets. Anything you can donate from a $5.00 gift card to a car is welcome! Again, every little bit helps out.<br />\r\n<a href=\"includes/pdf/DonationRequestLetter_ToysForShots_2012.pdf\" target=\"_blank\">Download our Donation Request Letter</a></p>\r\n\r\n<p><strong>Toys for Tots</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>If you can not attend the event and would rather just directly donate to the program please go right ahead. You can <a href=\"https://secure3.convio.net/tft/site/Donation2?idb=1689888040&amp;df_id=1233&amp;1233.donation=form1\" target=\"_blank\">click here to make </a>a donation on the Toys for Tots program website.</p>\r\n\r\n<p><strong>Volunteers </strong></p>\r\n\r\n<p>We are looking for anyone who would like to help out with the event. There are a couple different positions we could really use some help with.</p>\r\n\r\n<ul>\r\n	<li>We need you to spread the word about our event. The more people we can get to attend the more children we can help.</li>\r\n	<li>We are looking for a couple people to run the coat check this year.</li>\r\n</ul>\r\n\r\n<p>&nbsp;</p>\r\n','initial commit',1,'2013-09-21 19:18:54',0x00,1,3),
+ (5,'<p>Toys for Shots is an annual fundraiser/holiday party. The primary purpose of this very special event is to collect as many new, un-giftwrapped toys as we can for the Marine\'s Toys for Tots program. A couple of representatives from the Marines will be present at the event to collect all the donated toys. In keeping with the true spirit of the holidays, your gift of a toy(s) can spread so much joy and hope to a deserving Cleveland area child this Christmas. Last year we were able to collect 16 huge boxes of toys and hope to break that record this year! The Marine\'s will be prepared with a large truck this year to fit all the toys we expect to donate!</p>\r\n\r\n<p>Why the name, \"Toys for Shots\"? We thought it would entice folks to go out and buy a toy if we offered a free drink in return for their toy (1 toy for 1 shot...\"Toys for Shots\"). The idea worked and we are happy to offer it again this year. Bring at least one new, un-giftwrapped toy and we will give you a free drink ticket.</p>\r\n\r\n<p>Although our purpose is to provide a bit of holiday happiness to children in need, this event is a holiday party! Expect to dance and have a good time, mingle with the crowd, have some holiday cheer, enjoy the food and participate in the raffle. We have an awesome lineup of baskets and items to be raffled off this year, so be sure to bring a few extra bucks to purchase the chinese raffle tickets!</p>\r\n\r\n<p>This will mark the fifth year for this event and we have some very high expectations. The event itself has grown each year in donations, gifts and attendance. This year the planning committee is made up of more than twenty people. Not only are we planning on delivering the best Toys for Shots event yet, but we expect this to grow into one of Northeast Ohio\'s biggest toy drives. We hope you will join us for an amazing night on December 08, 2012.</p>\r\n','',2,'2013-09-21 20:01:28',0x00,1,1),
+ (6,'<p>\r\n  <strong>Who:</strong> Everyone is Welcome! <br/>\r\n  <strong>What:</strong> Toys for Shots Fundraiser/Holiday Party<br>\r\n  <strong>Purpose:</strong> To raise funds and boxes of toys for the Marine\'s Toys for Tots Program<br>\r\n  <strong>Food:</strong> Finger foods from Windows on the River and Cheesecakes plus other goodies from Marry Me Cheesecakes will be served at no charge<br>\r\n  <strong>Drink:</strong> Cash Bar<br>\r\n  <strong>What to Wear:</strong> It\'s a holiday party! Dress to impress!<br/>\r\n  <strong>Where:</strong> <ahref=\"http://windowsontheriver.com\">Windows on the River</a><br/>\r\n  <strong>When:</strong> Saturday December 08, 2012 / 7:00 PM - 12:00 AM<br/>\r\n  <strong>RSVP:</strong> <a href=\"/rsvp\">Click here to RSVP and receive 1 free raffle ticket</a><br/>\r\n</p>\r\n\r\n<p>Toys for Shots is an annual fundraiser/holiday party. The primary purpose of this very special event is to collect as many new, un-giftwrapped toys as we can for the Marine\'s Toys for Tots program. A couple of representatives from the Marines will be present at the event to collect all the donated toys. In keeping with the true spirit of the holidays, your gift of a toy(s) can spread so much joy and hope to a deserving Cleveland area child this Christmas. Last year we were able to collect 16 huge boxes of toys and hope to break that record this year! The Marine\'s will be prepared with a large truck this year to fit all the toys we expect to donate!</p>\r\n\r\n<p>Why the name, \"Toys for Shots\"? We thought it would entice folks to go out and buy a toy if we offered a free drink in return for their toy (1 toy for 1 shot...\"Toys for Shots\"). The idea worked and we are happy to offer it again this year. Bring at least one new, un-giftwrapped toy and we will give you a free drink ticket.</p>\r\n\r\n<p>Although our purpose is to provide a bit of holiday happiness to children in need, this event is a holiday party! Expect to dance and have a good time, mingle with the crowd, have some holiday cheer, enjoy the food and participate in the raffle. We have an awesome lineup of baskets and items to be raffled off this year, so be sure to bring a few extra bucks to purchase the chinese raffle tickets!</p>\r\n\r\n<p>This will mark the fifth year for this event and we have some very high expectations. The event itself has grown each year in donations, gifts and attendance. This year the planning committee is made up of more than twenty people. Not only are we planning on delivering the best Toys for Shots event yet, but we expect this to grow into one of Northeast Ohio\'s biggest toy drives. We hope you will join us for an amazing night on December 08, 2012.</p>\r\n','',3,'2013-09-21 20:30:12',0x00,1,1),
+ (7,'<p><strong>Who:</strong> Everyone is Welcome!<br />\r\n<strong>What:</strong> Toys for Shots Fundraiser/Holiday Party<br />\r\n<strong>Purpose:</strong> To raise funds and boxes of toys for the Marine\'s Toys for Tots Program<br />\r\n<strong>Food:</strong> Finger foods from Windows on the River and Cheesecakes plus other goodies from Marry Me Cheesecakes will be served at no charge<br />\r\n<strong>Drink:</strong> Cash Bar<br />\r\n<strong>What to Wear:</strong> It\'s a holiday party! Dress to impress!<br />\r\n<strong>Where:</strong></p>\r\n\r\n<p>Toys for Shots is an annual fundraiser/holiday party. The primary purpose of this very special event is to collect as many new, un-giftwrapped toys as we can for the Marine\'s Toys for Tots program. A couple of representatives from the Marines will be present at the event to collect all the donated toys. In keeping with the true spirit of the holidays, your gift of a toy(s) can spread so much joy and hope to a deserving Cleveland area child this Christmas. Last year we were able to collect 16 huge boxes of toys and hope to break that record this year! The Marine\'s will be prepared with a large truck this year to fit all the toys we expect to donate!</p>\r\n\r\n<p>Why the name, \"Toys for Shots\"? We thought it would entice folks to go out and buy a toy if we offered a free drink in return for their toy (1 toy for 1 shot...\"Toys for Shots\"). The idea worked and we are happy to offer it again this year. Bring at least one new, un-giftwrapped toy and we will give you a free drink ticket.</p>\r\n\r\n<p>Although our purpose is to provide a bit of holiday happiness to children in need, this event is a holiday party! Expect to dance and have a good time, mingle with the crowd, have some holiday cheer, enjoy the food and participate in the raffle. We have an awesome lineup of baskets and items to be raffled off this year, so be sure to bring a few extra bucks to purchase the chinese raffle tickets!</p>\r\n\r\n<p>This will mark the fifth year for this event and we have some very high expectations. The event itself has grown each year in donations, gifts and attendance. This year the planning committee is made up of more than twenty people. Not only are we planning on delivering the best Toys for Shots event yet, but we expect this to grow into one of Northeast Ohio\'s biggest toy drives. We hope you will join us for an amazing night on December 08, 2012.</p>\r\n\r\n<p>Thank You<br/>\r\n<span class=\"signature\">Daniel Vega</span><br/>Toys for Shots Founder<br/>\r\n</p>\r\n','',4,'2013-09-21 20:31:22',0x00,1,1),
+ (8,'<p><strong>Who:</strong> Everyone is Welcome!<br />\r\n<strong>What:</strong> Toys for Shots Fundraiser/Holiday Party<br />\r\n<strong>Purpose:</strong> To raise funds and boxes of toys for the Marine\'s Toys for Tots Program<br />\r\n<strong>Food:</strong> Finger foods from Windows on the River and Cheesecakes plus other goodies from Marry Me Cheesecakes will be served at no charge<br />\r\n<strong>Drink:</strong> Cash Bar<br />\r\n<strong>What to Wear:</strong> It\'s a holiday party! Dress to impress!<br />\r\n<strong>Where:</strong></p>\r\n\r\n<p>Toys for Shots is an annual fundraiser/holiday party. The primary purpose of this very special event is to collect as many new, un-giftwrapped toys as we can for the Marine\'s Toys for Tots program. A couple of representatives from the Marines will be present at the event to collect all the donated toys. In keeping with the true spirit of the holidays, your gift of a toy(s) can spread so much joy and hope to a deserving Cleveland area child this Christmas. Last year we were able to collect 16 huge boxes of toys and hope to break that record this year! The Marine\'s will be prepared with a large truck this year to fit all the toys we expect to donate!</p>\r\n\r\n<p>Why the name, \"Toys for Shots\"? We thought it would entice folks to go out and buy a toy if we offered a free drink in return for their toy (1 toy for 1 shot...\"Toys for Shots\"). The idea worked and we are happy to offer it again this year. Bring at least one new, un-giftwrapped toy and we will give you a free drink ticket.</p>\r\n\r\n<p>Although our purpose is to provide a bit of holiday happiness to children in need, this event is a holiday party! Expect to dance and have a good time, mingle with the crowd, have some holiday cheer, enjoy the food and participate in the raffle. We have an awesome lineup of baskets and items to be raffled off this year, so be sure to bring a few extra bucks to purchase the chinese raffle tickets!</p>\r\n\r\n<p>This will mark the fifth year for this event and we have some very high expectations. The event itself has grown each year in donations, gifts and attendance. This year the planning committee is made up of more than twenty people. Not only are we planning on delivering the best Toys for Shots event yet, but we expect this to grow into one of Northeast Ohio\'s biggest toy drives. We hope you will join us for an amazing night on December 08, 2012.</p>\r\n\r\n<p>Thank You<br />\r\n<div class=\"signature\">Daniel Vega</div><br />\r\nToys for Shots Founder</p>\r\n','',5,'2013-09-21 20:37:29',0x00,1,1),
+ (9,'<p><strong>Who:</strong> Everyone is Welcome!<br />\r\n<strong>What:</strong> Toys for Shots Fundraiser/Holiday Party<br />\r\n<strong>Purpose:</strong> To raise funds and boxes of toys for the Marine\'s Toys for Tots Program<br />\r\n<strong>Food:</strong> Finger foods from Windows on the River and Cheesecakes plus other goodies from Marry Me Cheesecakes will be served at no charge<br />\r\n<strong>Drink:</strong> Cash Bar<br />\r\n<strong>What to Wear:</strong> It\'s a holiday party! Dress to impress!<br />\r\n<strong>Where:</strong></p>\r\n\r\n<p>Toys for Shots is an annual fundraiser/holiday party. The primary purpose of this very special event is to collect as many new, un-giftwrapped toys as we can for the Marine\'s Toys for Tots program. A couple of representatives from the Marines will be present at the event to collect all the donated toys. In keeping with the true spirit of the holidays, your gift of a toy(s) can spread so much joy and hope to a deserving Cleveland area child this Christmas. Last year we were able to collect 16 huge boxes of toys and hope to break that record this year! The Marine\'s will be prepared with a large truck this year to fit all the toys we expect to donate!</p>\r\n\r\n<p>Why the name, \"Toys for Shots\"? We thought it would entice folks to go out and buy a toy if we offered a free drink in return for their toy (1 toy for 1 shot...\"Toys for Shots\"). The idea worked and we are happy to offer it again this year. Bring at least one new, un-giftwrapped toy and we will give you a free drink ticket.</p>\r\n\r\n<p>Although our purpose is to provide a bit of holiday happiness to children in need, this event is a holiday party! Expect to dance and have a good time, mingle with the crowd, have some holiday cheer, enjoy the food and participate in the raffle. We have an awesome lineup of baskets and items to be raffled off this year, so be sure to bring a few extra bucks to purchase the chinese raffle tickets!</p>\r\n\r\n<p>This will mark the fifth year for this event and we have some very high expectations. The event itself has grown each year in donations, gifts and attendance. This year the planning committee is made up of more than twenty people. Not only are we planning on delivering the best Toys for Shots event yet, but we expect this to grow into one of Northeast Ohio\'s biggest toy drives. We hope you will join us for an amazing night on December 08, 2012.</p>\r\n\r\n<p>Thank You</p>\r\n\r\n<div class=\"signature\">Daniel Vega</div>\r\n\r\n<p><br />\r\nToys for Shots Founder</p>\r\n\r\n<p>&nbsp;</p>\r\n','',6,'2013-09-21 21:05:41',0x00,1,1),
+ (10,'<h1>About The Party</h1>\r\n\r\n<p><strong>Who:</strong> Anyone interested in having fun and helping out a good cause.<br />\r\n<strong>What:</strong> Toys for Tots Fundraiser Christmas Party.<br />\r\n<strong>Where:</strong> <a href=\"http://windowsontheriver.com\">Windows on the River</a><br />\r\n<strong>When:</strong> Saturday December 08, 2012 / 7:00 PM - 12:00 AM<br />\r\n<br />\r\n<cfoutput> <strong>Windows on the River</strong></cfoutput></p>\r\n\r\n<p>2000 Sycamore<br />\r\nCleveland OH 44113<br />\r\nPhone: 216.861.1445<br />\r\nWebsite: <a href=\"http://windowsontheriver.com\">Windows on the River</a></p>\r\n\r\n<p><strong>About The party</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Windows on the River is located on the west bank of the Flats in downtown Cleveland, OH, on the second and third floors of the prestigious FirstEnergy Powerhouse building. The event will be held in the river room which is located on the second floor at the far end of the building. After you park and you are walking towards the building you will see a red awning. This is the entrance to the river room and at that point you should see signs for the event. This will be a private event, please <a href=\"#event.buildLink(\'rsvp\')#\">RSVP</a> so we have a accurate guest list and an idea of how many people are coming. If you bring a toy or check we will give you 2 drink tickets. This will hopefully encourage everyone to <a href=\"#event.buildLink(\'donate\')#\">bring a donation</a> to this wonderful cause. If you don\'t bring a toy there will be a $10.00 donation cover charge.</p>\r\n\r\n<p><strong>Chinese Auction</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>The difference between a raffle and a Chinese auction is that in a raffle with multiple prizes, there is one \"hat\" from which names are drawn, but in a Chinese auction each prize has its own \"hat\". This allows ticket buyers to choose which prize to focus on, as opposed to having a first, second, third, etc. prize.</p>\r\n\r\n<p>We are looking for <a href=\"#event.buildLink(\'donate\')#\">raffle prize donations</a> to help make this event a smash. We have some ideas for raffle baskets but if you have ideas please let us know. You can find out what raffle prizes have already been donated by <a href=\"#event.buildLink(\'raffle\')#\">visiting the raffle page</a>.</p>\r\n\r\n<p><strong>Entertainment</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>The private party room will have a DJ making it impossible to be bored.</p>\r\n\r\n<p><strong>Dancers</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Rock City Dance Studio will be performing a special dance routine choreographed by Jayj Graham.<br />\r\n<a href=\"http://www.rockcitydance.com\">www.rockcitydance.com</a></p>\r\n\r\n<p><strong>Photo Booth &amp; Photographer</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>We will have a photo booth for you to take pictures with your friends. We will also have a photographer walking around the event capturing everything.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n','page title change',2,'2013-09-21 21:08:25',0x00,1,2),
+ (11,'<p><strong>Who:</strong> Anyone interested in having fun and helping out a good cause.<br />\r\n<strong>What:</strong> Toys for Tots Fundraiser Christmas Party.<br />\r\n<strong>Where:</strong> <a href=\"http://windowsontheriver.com\">Windows on the River</a><br />\r\n<strong>When:</strong> Saturday December 08, 2012 / 7:00 PM - 12:00 AM<br />\r\n<br />\r\n<cfoutput> <strong>Windows on the River</strong></cfoutput></p>\r\n\r\n<p>2000 Sycamore<br />\r\nCleveland OH 44113<br />\r\nPhone: 216.861.1445<br />\r\nWebsite: <a href=\"http://windowsontheriver.com\">Windows on the River</a></p>\r\n\r\n<p><strong>About The party</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Windows on the River is located on the west bank of the Flats in downtown Cleveland, OH, on the second and third floors of the prestigious FirstEnergy Powerhouse building. The event will be held in the river room which is located on the second floor at the far end of the building. After you park and you are walking towards the building you will see a red awning. This is the entrance to the river room and at that point you should see signs for the event. This will be a private event, please <a href=\"#event.buildLink(\'rsvp\')#\">RSVP</a> so we have a accurate guest list and an idea of how many people are coming. If you bring a toy or check we will give you 2 drink tickets. This will hopefully encourage everyone to <a href=\"#event.buildLink(\'donate\')#\">bring a donation</a> to this wonderful cause. If you don\'t bring a toy there will be a $10.00 donation cover charge.</p>\r\n\r\n<p><strong>Chinese Auction</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>The difference between a raffle and a Chinese auction is that in a raffle with multiple prizes, there is one \"hat\" from which names are drawn, but in a Chinese auction each prize has its own \"hat\". This allows ticket buyers to choose which prize to focus on, as opposed to having a first, second, third, etc. prize.</p>\r\n\r\n<p>We are looking for <a href=\"#event.buildLink(\'donate\')#\">raffle prize donations</a> to help make this event a smash. We have some ideas for raffle baskets but if you have ideas please let us know. You can find out what raffle prizes have already been donated by <a href=\"#event.buildLink(\'raffle\')#\">visiting the raffle page</a>.</p>\r\n\r\n<p><strong>Entertainment</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>The private party room will have a DJ making it impossible to be bored.</p>\r\n\r\n<p><strong>Dancers</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Rock City Dance Studio will be performing a special dance routine choreographed by Jayj Graham.<br />\r\n<a href=\"http://www.rockcitydance.com\">www.rockcitydance.com</a></p>\r\n\r\n<p><strong>Photo Booth &amp; Photographer</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>We will have a photo booth for you to take pictures with your friends. We will also have a photographer walking around the event capturing everything.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n','remove title from content',3,'2013-09-21 21:08:45',0x00,1,2),
+ (12,'<p><strong>Who:</strong> Anyone interested in having fun and helping out a good cause.<br />\r\n<strong>What:</strong> Toys for Tots Fundraiser Christmas Party.<br />\r\n<strong>Where:</strong> <a href=\"http://windowsontheriver.com\">Windows on the River</a><br />\r\n<strong>When:</strong> Saturday December 08, 2012 / 7:00 PM - 12:00 AM<br />\r\n<br />\r\n<cfoutput> <strong>Windows on the River</strong></cfoutput></p>\r\n\r\n<p>2000 Sycamore<br />\r\nCleveland OH 44113<br />\r\nPhone: 216.861.1445<br />\r\nWebsite: <a href=\"http://windowsontheriver.com\">Windows on the River</a></p>\r\n\r\n<p><strong>About The party</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Windows on the River is located on the west bank of the Flats in downtown Cleveland, OH, on the second and third floors of the prestigious FirstEnergy Powerhouse building. The event will be held in the river room which is located on the second floor at the far end of the building. After you park and you are walking towards the building you will see a red awning. This is the entrance to the river room and at that point you should see signs for the event. This will be a private event, please <a href=\"#event.buildLink(\'rsvp\')#\">RSVP</a> so we have a accurate guest list and an idea of how many people are coming. If you bring a toy or check we will give you 2 drink tickets. This will hopefully encourage everyone to <a href=\"#event.buildLink(\'donate\')#\">bring a donation</a> to this wonderful cause. If you don\'t bring a toy there will be a $10.00 donation cover charge.</p>\r\n\r\n<p><strong>Chinese Auction</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>The difference between a raffle and a Chinese auction is that in a raffle with multiple prizes, there is one \"hat\" from which names are drawn, but in a Chinese auction each prize has its own \"hat\". This allows ticket buyers to choose which prize to focus on, as opposed to having a first, second, third, etc. prize.</p>\r\n\r\n<p>We are looking for <a href=\"#event.buildLink(\'donate\')#\">raffle prize donations</a> to help make this event a smash. We have some ideas for raffle baskets but if you have ideas please let us know. You can find out what raffle prizes have already been donated by <a href=\"#event.buildLink(\'raffle\')#\">visiting the raffle page</a>.</p>\r\n\r\n<p><strong>Entertainment</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>The private party room will have a DJ making it impossible to be bored.</p>\r\n\r\n<p><strong>Dancers</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Rock City Dance Studio will be performing a special dance routine choreographed by Jayj Graham.<br />\r\n<a href=\"http://www.rockcitydance.com\">www.rockcitydance.com</a></p>\r\n\r\n<p><strong>Photo Booth &amp; Photographer</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>We will have a photo booth for you to take pictures with your friends. We will also have a photographer walking around the event capturing everything.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n','added page title ',4,'2013-09-21 21:11:28',0x00,1,2),
+ (13,'<p><strong>Who:</strong> Anyone interested in having fun and helping out a good cause.<br />\r\n<strong>What:</strong> Toys for Tots Fundraiser Christmas Party.<br />\r\n<strong>Where:</strong> <a href=\"http://windowsontheriver.com\">Windows on the River</a><br />\r\n<strong>When:</strong> Saturday December 08, 2012 / 7:00 PM - 12:00 AM<br />\r\n<br />\r\n<cfoutput> <strong>Windows on the River</strong></cfoutput></p>\r\n\r\n<p>2000 Sycamore<br />\r\nCleveland OH 44113<br />\r\nPhone: 216.861.1445<br />\r\nWebsite: <a href=\"http://windowsontheriver.com\">Windows on the River</a></p>\r\n\r\n<p><strong>About The party</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Windows on the River is located on the west bank of the Flats in downtown Cleveland, OH, on the second and third floors of the prestigious FirstEnergy Powerhouse building. The event will be held in the river room which is located on the second floor at the far end of the building. After you park and you are walking towards the building you will see a red awning. This is the entrance to the river room and at that point you should see signs for the event. This will be a private event, please <a href=\"#event.buildLink(\'rsvp\')#\">RSVP</a> so we have a accurate guest list and an idea of how many people are coming. If you bring a toy or check we will give you 2 drink tickets. This will hopefully encourage everyone to <a href=\"#event.buildLink(\'donate\')#\">bring a donation</a> to this wonderful cause. If you don\'t bring a toy there will be a $10.00 donation cover charge.</p>\r\n\r\n<p><strong>Chinese Auction</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>The difference between a raffle and a Chinese auction is that in a raffle with multiple prizes, there is one \"hat\" from which names are drawn, but in a Chinese auction each prize has its own \"hat\". This allows ticket buyers to choose which prize to focus on, as opposed to having a first, second, third, etc. prize.</p>\r\n\r\n<p>We are looking for <a href=\"#event.buildLink(\'donate\')#\">raffle prize donations</a> to help make this event a smash. We have some ideas for raffle baskets but if you have ideas please let us know. You can find out what raffle prizes have already been donated by <a href=\"#event.buildLink(\'raffle\')#\">visiting the raffle page</a>.</p>\r\n\r\n<p><strong>Entertainment</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>The private party room will have a DJ making it impossible to be bored.</p>\r\n\r\n<p><strong>Dancers</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Rock City Dance Studio will be performing a special dance routine choreographed by Jayj Graham.<br />\r\n<a href=\"http://www.rockcitydance.com\">www.rockcitydance.com</a></p>\r\n\r\n<p><strong>Photo Booth &amp; Photographer</strong></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>We will have a photo booth for you to take pictures with your friends. We will also have a photographer walking around the event capturing everything.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n','',5,'2013-09-21 21:12:02',0x00,1,2),
+ (14,'<p>&nbsp;</p>\r\n<p><strong>Who:</strong> Everyone is Welcome!<br />\r\n<strong>What:</strong> Toys for Shots Fundraiser/Holiday Party<br />\r\n<strong>Purpose:</strong> To raise funds and boxes of toys for the Marine\'s Toys for Tots Program<br />\r\n<strong>Food:</strong> Finger foods from Windows on the River and Cheesecakes plus other goodies from Marry Me Cheesecakes will be served at no charge<br />\r\n<strong>Drink:</strong> Cash Bar<br />\r\n<strong>What to Wear:</strong> It\'s a holiday party! Dress to impress!<br />\r\n<strong>Where:</strong></p>\r\n\r\n<p>Toys for Shots is an annual fundraiser/holiday party. The primary purpose of this very special event is to collect as many new, un-giftwrapped toys as we can for the Marine\'s Toys for Tots program. A couple of representatives from the Marines will be present at the event to collect all the donated toys. In keeping with the true spirit of the holidays, your gift of a toy(s) can spread so much joy and hope to a deserving Cleveland area child this Christmas. Last year we were able to collect 16 huge boxes of toys and hope to break that record this year! The Marine\'s will be prepared with a large truck this year to fit all the toys we expect to donate!</p>\r\n\r\n<p>Why the name, \"Toys for Shots\"? We thought it would entice folks to go out and buy a toy if we offered a free drink in return for their toy (1 toy for 1 shot...\"Toys for Shots\"). The idea worked and we are happy to offer it again this year. Bring at least one new, un-giftwrapped toy and we will give you a free drink ticket.</p>\r\n\r\n<p>Although our purpose is to provide a bit of holiday happiness to children in need, this event is a holiday party! Expect to dance and have a good time, mingle with the crowd, have some holiday cheer, enjoy the food and participate in the raffle. We have an awesome lineup of baskets and items to be raffled off this year, so be sure to bring a few extra bucks to purchase the chinese raffle tickets!</p>\r\n\r\n<p>This will mark the fifth year for this event and we have some very high expectations. The event itself has grown each year in donations, gifts and attendance. This year the planning committee is made up of more than twenty people. Not only are we planning on delivering the best Toys for Shots event yet, but we expect this to grow into one of Northeast Ohio\'s biggest toy drives. We hope you will join us for an amazing night on December 08, 2012.</p>\r\n\r\n<p>Thank You</p>\r\n\r\n<div class=\"signature\">Daniel Vega</div>\r\n\r\n<p><br />\r\nToys for Shots Founder</p>\r\n\r\n<p>&nbsp;</p>\r\n','',7,'2013-09-21 21:16:26',0x00,1,1),
+ (15,'<p><strong>Who:</strong> Everyone is Welcome!<br />\r\n<strong>What:</strong> Toys for Shots Fundraiser/Holiday Party<br />\r\n<strong>Purpose:</strong> To raise funds and boxes of toys for the Marine\'s Toys for Tots Program<br />\r\n<strong>Food:</strong> Finger foods from Windows on the River and Cheesecakes plus other goodies from Marry Me Cheesecakes will be served at no charge<br />\r\n<strong>Drink:</strong> Cash Bar<br />\r\n<strong>What to Wear:</strong> It\'s a holiday party! Dress to impress!<br />\r\n<strong>Where:</strong></p>\r\n\r\n<p>Toys for Shots is an annual fundraiser/holiday party. The primary purpose of this very special event is to collect as many new, un-giftwrapped toys as we can for the Marine\'s Toys for Tots program. A couple of representatives from the Marines will be present at the event to collect all the donated toys. In keeping with the true spirit of the holidays, your gift of a toy(s) can spread so much joy and hope to a deserving Cleveland area child this Christmas. Last year we were able to collect 16 huge boxes of toys and hope to break that record this year! The Marine\'s will be prepared with a large truck this year to fit all the toys we expect to donate!</p>\r\n\r\n<p>Why the name, \"Toys for Shots\"? We thought it would entice folks to go out and buy a toy if we offered a free drink in return for their toy (1 toy for 1 shot...\"Toys for Shots\"). The idea worked and we are happy to offer it again this year. Bring at least one new, un-giftwrapped toy and we will give you a free drink ticket.</p>\r\n\r\n<p>Although our purpose is to provide a bit of holiday happiness to children in need, this event is a holiday party! Expect to dance and have a good time, mingle with the crowd, have some holiday cheer, enjoy the food and participate in the raffle. We have an awesome lineup of baskets and items to be raffled off this year, so be sure to bring a few extra bucks to purchase the chinese raffle tickets!</p>\r\n\r\n<p>This will mark the fifth year for this event and we have some very high expectations. The event itself has grown each year in donations, gifts and attendance. This year the planning committee is made up of more than twenty people. Not only are we planning on delivering the best Toys for Shots event yet, but we expect this to grow into one of Northeast Ohio\'s biggest toy drives. We hope you will join us for an amazing night on December 08, 2012.</p>\r\n\r\n<p>Thank You</p>\r\n\r\n<div class=\"signature\">Daniel Vega</div>\r\n\r\n<p><br />\r\nToys for Shots Founder</p>\r\n\r\n<p>&nbsp;</p>\r\n','adding new page title',8,'2013-09-21 21:17:42',0x00,1,1),
+ (16,'<p><strong>Who:</strong> Anyone interested in having fun and helping out a good cause.<br />\r\n<strong>What:</strong> Toys for Tots Fundraiser Christmas Party.<br />\r\n<strong>Where:</strong> <a href=\"http://windowsontheriver.com\">Windows on the River</a><br />\r\n<strong>When:</strong> Saturday December 08, 2012 / 7:00 PM - 12:00 AM<br />\r\n<br />\r\n<cfoutput> <strong>Windows on the River</strong></cfoutput></p>\r\n\r\n<p>2000 Sycamore<br />\r\nCleveland OH 44113<br />\r\nPhone: 216.861.1445<br />\r\nWebsite: <a href=\"http://windowsontheriver.com\">Windows on the River</a></p>\r\n\r\n<p><strong>About The party</strong></p>\r\n<p>Windows on the River is located on the west bank of the Flats in downtown Cleveland, OH, on the second and third floors of the prestigious FirstEnergy Powerhouse building. The event will be held in the river room which is located on the second floor at the far end of the building. After you park and you are walking towards the building you will see a red awning. This is the entrance to the river room and at that point you should see signs for the event. This will be a private event, please <a href=\"#event.buildLink(\'rsvp\')#\">RSVP</a> so we have a accurate guest list and an idea of how many people are coming. If you bring a toy or check we will give you 2 drink tickets. This will hopefully encourage everyone to <a href=\"#event.buildLink(\'donate\')#\">bring a donation</a> to this wonderful cause. If you don\'t bring a toy there will be a $10.00 donation cover charge.</p>\r\n\r\n<p><strong>Chinese Auction</strong></p>\r\n<p>The difference between a raffle and a Chinese auction is that in a raffle with multiple prizes, there is one \"hat\" from which names are drawn, but in a Chinese auction each prize has its own \"hat\". This allows ticket buyers to choose which prize to focus on, as opposed to having a first, second, third, etc. prize.</p>\r\n\r\n<p>We are looking for <a href=\"#event.buildLink(\'donate\')#\">raffle prize donations</a> to help make this event a smash. We have some ideas for raffle baskets but if you have ideas please let us know. You can find out what raffle prizes have already been donated by <a href=\"#event.buildLink(\'raffle\')#\">visiting the raffle page</a>.</p>\r\n\r\n<p><strong>Entertainment</strong></p>\r\n<p>The private party room will have a DJ making it impossible to be bored.</p>\r\n\r\n<p><strong>Photo Booth &amp; Photographer</strong></p>\r\n<p>We will have a photo booth for you to take pictures with your friends. We will also have a photographer walking around the event capturing everything.</p>','',6,'2013-09-21 21:19:11',0x00,1,2),
+ (17,'<h1>Make A Donation</h1>\r\n\r\n<p>We have a many options for taking donations. Anything you can do to help out would not only be a great help to me but you would also be doing something good for a great cause. There is no donation to small, every little bit helps!</p>\r\n\r\n<p><strong>Making a Donation</strong></p>\r\n<p>If you would like to make a cash donation please click on the donate button below. Your donation will go towards raffle prizes or helping us cover the cost of running the event. Thank you for your support.</p>\r\n\r\n\r\n<form action=\"https://www.paypal.com/cgi-bin/webscr\" method=\"post\" target=\"_blank\"><input name=\"cmd\" type=\"hidden\" value=\"_donations\" /> <input name=\"business\" type=\"hidden\" value=\"danvega@gmail.com\" /> <input name=\"lc\" type=\"hidden\" value=\"US\" /> <input name=\"item_name\" type=\"hidden\" value=\"Toys For Shots\" /> <input name=\"no_note\" type=\"hidden\" value=\"0\" /> <input name=\"currency_code\" type=\"hidden\" value=\"USD\" /> <input name=\"bn\" type=\"hidden\" value=\"PP-DonationsBF:btn_donateCC_LG.gif:NonHostedGuest\" /> <input alt=\"PayPal - The safer, easier way to pay online!\" border=\"0\" name=\"submit\" src=\"https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif\" type=\"image\" /> <img alt=\"\" border=\"0\" height=\"1\" src=\"https://www.paypalobjects.com/en_US/i/scr/pixel.gif\" width=\"1\" /></form>\r\n<p><br />\r\n<strong>Attending the Party</strong></p>\r\n\r\n<p>If you are attending the party you can either bring a toy or a donation. If you bring a toy we ask that you bring them unwrapped. Please make sure the toy is not a weapon or any type of projectile. If you would like to give a cash donation please make your check out to \"Marine Toys for Tots Foundation\" or just \"Toys for Tots\".</p>\r\n\r\n<p><strong>Raffle Prizes</strong></p>\r\n\r\n<p>We are going to hold a prize raffle at the door along with a Chinese auction. All of the raffle ticket money will also be donated to the Toys for Tots program. We need as many raffle prizes as we can get our hands on to make sure people are buying tickets. Anything you can donate from a $5.00 gift card to a car is welcome! Again, every little bit helps out.<br />\r\n<a href=\"includes/pdf/DonationRequestLetter_ToysForShots_2012.pdf\" target=\"_blank\">Download our Donation Request Letter</a></p>\r\n\r\n<p><strong>Toys for Tots</strong></p>\r\n<p>If you can not attend the event and would rather just directly donate to the program please go right ahead. You can <a href=\"https://secure3.convio.net/tft/site/Donation2?idb=1689888040&amp;df_id=1233&amp;1233.donation=form1\" target=\"_blank\">click here to make </a>a donation on the Toys for Tots program website.</p>\r\n\r\n<p><strong>Volunteers </strong></p>\r\n\r\n<p>We are looking for anyone who would like to help out with the event. There are a couple different positions we could really use some help with.</p>\r\n\r\n<ul>\r\n	<li>We need you to spread the word about our event. The more people we can get to attend the more children we can help.</li>\r\n	<li>We are looking for a couple people to run the coat check this year.</li>\r\n</ul>\r\n\r\n<p>&nbsp;</p>\r\n','updating copy',2,'2013-09-21 21:21:11',0x00,1,3),
+ (18,'<p>We have a many options for taking donations. Anything you can do to help out would not only be a great help to me but you would also be doing something good for a great cause. There is no donation to small, every little bit helps!</p>\r\n\r\n<p><strong>Making a Donation</strong></p>\r\n\r\n<p>If you would like to make a cash donation please click on the donate button below. Your donation will go towards raffle prizes or helping us cover the cost of running the event. Thank you for your support.</p>\r\n\r\n<form action=\"https://www.paypal.com/cgi-bin/webscr\" method=\"post\" target=\"_blank\"><input name=\"cmd\" type=\"hidden\" value=\"_donations\" /> <input name=\"business\" type=\"hidden\" value=\"danvega@gmail.com\" /> <input name=\"lc\" type=\"hidden\" value=\"US\" /> <input name=\"item_name\" type=\"hidden\" value=\"Toys For Shots\" /> <input name=\"no_note\" type=\"hidden\" value=\"0\" /> <input name=\"currency_code\" type=\"hidden\" value=\"USD\" /> <input name=\"bn\" type=\"hidden\" value=\"PP-DonationsBF:btn_donateCC_LG.gif:NonHostedGuest\" /> <input alt=\"PayPal - The safer, easier way to pay online!\" border=\"0\" name=\"submit\" src=\"https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif\" type=\"image\" /> <img alt=\"\" border=\"0\" height=\"1\" src=\"https://www.paypalobjects.com/en_US/i/scr/pixel.gif\" width=\"1\" /></form>\r\n\r\n<p><br />\r\n<strong>Attending the Party</strong></p>\r\n\r\n<p>If you are attending the party you can either bring a toy or a donation. If you bring a toy we ask that you bring them unwrapped. Please make sure the toy is not a weapon or any type of projectile. If you would like to give a cash donation please make your check out to \"Marine Toys for Tots Foundation\" or just \"Toys for Tots\".</p>\r\n\r\n<p><strong>Raffle Prizes</strong></p>\r\n\r\n<p>We are going to hold a prize raffle at the door along with a Chinese auction. All of the raffle ticket money will also be donated to the Toys for Tots program. We need as many raffle prizes as we can get our hands on to make sure people are buying tickets. Anything you can donate from a $5.00 gift card to a car is welcome! Again, every little bit helps out.<br />\r\n<a href=\"includes/pdf/DonationRequestLetter_ToysForShots_2012.pdf\" target=\"_blank\">Download our Donation Request Letter</a></p>\r\n\r\n<p><strong>Toys for Tots</strong></p>\r\n\r\n<p>If you can not attend the event and would rather just directly donate to the program please go right ahead. You can <a href=\"https://secure3.convio.net/tft/site/Donation2?idb=1689888040&amp;df_id=1233&amp;1233.donation=form1\" target=\"_blank\">click here to make </a>a donation on the Toys for Tots program website.</p>\r\n\r\n<p><strong>Volunteers </strong></p>\r\n\r\n<p>We are looking for anyone who would like to help out with the event. There are a couple different positions we could really use some help with.</p>\r\n\r\n<ul>\r\n	<li>We need you to spread the word about our event. The more people we can get to attend the more children we can help.</li>\r\n	<li>We are looking for a couple people to run the coat check this year.</li>\r\n</ul>\r\n\r\n<p>&nbsp;</p>\r\n','',3,'2013-09-21 21:21:34',0x00,1,3),
+ (19,'<p>With hopes of providing a larger donation, a Chinese Auction will be the center attraction for this year\'s fund raiser. To give this year\'s event the best opportunity for success, we are inviting a donation from the local pro-athletic organizations, restaurants, and entertainment businesses. Each donation will be organized in a \"themed\" style basket to generate the highest level of interest and raise as many bids as possible. Your participation will be greatly appreciated and rewarded by having your organization\'s name posted at the event and on the event website, if requested. Please help us make this Christmas happy for the communities\' children. If you are looking for ideas for door prizes or auction items to donate I have included last years items below.</p>\r\n\r\n<p><strong><a href=\"/index.cfm/__media/Donation Request Letter - Toys for Shots_2013.pdf\">Download our donation Request Letter</a></strong></p>\r\n','initial commit',1,'2013-09-21 21:26:52',0x00,1,5),
+ (20,'<p>With hopes of providing a larger donation, a Chinese Auction will be the center attraction for this year\'s fund raiser. To give this year\'s event the best opportunity for success, we are inviting a donation from the local pro-athletic organizations, restaurants, and entertainment businesses. Each donation will be organized in a \"themed\" style basket to generate the highest level of interest and raise as many bids as possible. Your participation will be greatly appreciated and rewarded by having your organization\'s name posted at the event and on the event website, if requested. Please help us make this Christmas happy for the communities\' children. If you are looking for ideas for door prizes or auction items to donate I have included last years items below.</p>\r\n\r\n<p><strong><a href=\"/index.cfm/__media/DonationRequestLetter_Toys for Shots_2013.pdf\">Download our donation Request Letter</a></strong></p>\r\n\r\n<p>&nbsp;</p>\r\n','',2,'2013-09-21 21:29:25',0x00,1,5),
+ (21,'<p>With hopes of providing a larger donation, a Chinese Auction will be the center attraction for this year\'s fund raiser. To give this year\'s event the best opportunity for success, we are inviting a donation from the local pro-athletic organizations, restaurants, and entertainment businesses. Each donation will be organized in a \"themed\" style basket to generate the highest level of interest and raise as many bids as possible. Your participation will be greatly appreciated and rewarded by having your organization\'s name posted at the event and on the event website, if requested. Please help us make this Christmas happy for the communities\' children. If you are looking for ideas for door prizes or auction items to donate I have included last years items below.</p>\r\n\r\n<p><strong><a href=\"/index.cfm/__media/DonationRequestLetter_Toys for Shots_2013.pdf\">Download our donation Request Letter</a></strong></p>\r\n\r\n<h2>2012 Door Prizes</h2>\r\n<ul>\r\n	<li>Lake Erie Monsters Tickets</li>\r\n	<li>Nautica Queen Tickets</li>\r\n	<li>Improv Tickets</li>\r\n	<li>More Coming Soon...</li>\r\n</ul>\r\n\r\n<h2>2012 Raffle Items</h2>\r\n<p>This list is not final and may or may not change. We are not sure on how some of the items will be packaged yet but we do have a list of items that will be up for raffle.</p>\r\n\r\n<ul>\r\n	<li>iPad Mini 16GB White & Silver</li>\r\n	<li>Irish Whiskey Package</li>\r\n	<li>Guinness</li>\r\n	<li>Jason Kipnis Autographed Baseball</li>\r\n	<li>Custom Cornhole Boards</li>\r\n	<li>4 Pack of Cavs tickets + Parking Pass</li>\r\n	<li>LockKeepers Inn Gift Certificate</li>\r\n	<li>Table 45 Dinner for Two + Valet Parking</li>\r\n	<li>Little Italy Package</li>\r\n	<li>Yoga Fitness Package</li>\r\n	<li>Ambiance Package</li>\r\n	<li>Adobe Package (Creative Suite 6 Web & Design Premium)</li>\r\n	<li>CTOWN CrossFit 1 Month Membership</li>\r\n	<li>Browns vs Chiefs 11/9/2012 - 2 Club Level Tickets</li>\r\n	<li>Scentsy Package</li>\r\n	<li>Backstage Bar gift certificate</li>\r\n	<li>Ohio State theme Custom Blanket</li>\r\n	<li>Home Improvement Package (Furniture/Cabinets/Countertops)</li>\r\n	<li>Lottery Tree</li>\r\n	<li>$100 Gas Card</li>\r\n	<li>4 Pack of Lake County Captains Tickets</li>\r\n	<li>Rockin Cleveland 5 hour party bus rental</li>\r\n	<li>Cocktail Basket</li>\r\n	<li>Etscy custom jewelry package (TheStacyCollection)</li>\r\n	<li>HorseShoe Casino Package</li>\r\n	<li>Joe Thomas Autographed Jersey</li>\r\n	<li>Marry Me Gourmet Cheesecakes and Decadent Desserts Gift Certificate</li>\r\n	<li>Life Time Fitness Package</li>\r\n	<li>Ramon Sessions autographed Jersey</li>\r\n	<li>Cleveland Playhouse Tickets</li>\r\n	<li>Movie Basket</li>\r\n	<li>Mary Kay Packages</li>\r\n	<li>Personal Training Sessions</li>\r\n	<li>5 hour DJ Service</li>\r\n	<li>Bed Bath & Beyond Gift Certificate</li>\r\n	<li>Windows on the River New Years Eve Package for 2</li>\r\n</ul>','',3,'2013-09-21 21:31:07',0x00,1,5),
+ (22,'<p>Photo Gallery</p>\r\n','initial commit',1,'2013-09-21 21:32:50',0x00,1,6),
+ (23,'<p>Photo Gallery</p>\r\n','',2,'2013-09-21 21:34:26',0x00,1,6),
+ (24,'<p>By registering for the event you will receive 1 free raffle ticket to our Chinese auction.</p>\r\n\r\n<hr />\r\n<div style=\"width:100%; text-align:left;\"><iframe allowtransparency=\"true\" frameborder=\"0\" height=\"260\" hspace=\"0\" marginheight=\"5\" marginwidth=\"5\" scrolling=\"auto\" src=\"http://www.eventbrite.com/tickets-external?eid=8429604173&amp;ref=etckt&amp;v=2\" vspace=\"0\" width=\"100%\"></iframe>\r\n\r\n<div style=\"font-family:Helvetica, Arial; font-size:10px; padding:5px 0 5px; margin:2px; width:100%; text-align:left;\"><a href=\"http://www.eventbrite.com/r/etckt\" style=\"color:#ddd; text-decoration:none;\" target=\"_blank\">Sell Tickets</a> <span style=\"color:#ddd;\">through</span> <a href=\"http://www.eventbrite.com?ref=etckt\" style=\"color:#ddd; text-decoration:none;\" target=\"_blank\">Eventbrite</a></div>\r\n</div>\r\n','initial commit',1,'2013-09-21 21:37:01',0x00,1,7),
+ (25,'<p>By registering for the event you will receive 1 free raffle ticket to our Chinese auction.</p>\r\n\r\n<hr />\r\n<div style=\"width:100%; text-align:left;\"><iframe allowtransparency=\"true\" frameborder=\"0\" height=\"260\" hspace=\"0\" marginheight=\"5\" marginwidth=\"5\" scrolling=\"auto\" src=\"http://www.eventbrite.com/tickets-external?eid=8429604173&amp;ref=etckt&amp;v=2\" vspace=\"0\" width=\"100%\"></iframe>\r\n\r\n<div style=\"font-family:Helvetica, Arial; font-size:10px; padding:5px 0 5px; margin:2px; width:100%; text-align:left;\"><a href=\"http://www.eventbrite.com/r/etckt\" style=\"color:#ddd; text-decoration:none;\" target=\"_blank\">Sell Tickets</a> <span style=\"color:#ddd;\">through</span> <a href=\"http://www.eventbrite.com?ref=etckt\" style=\"color:#ddd; text-decoration:none;\" target=\"_blank\">Eventbrite</a></div>\r\n</div>\r\n','',2,'2013-09-21 21:37:20',0x00,1,7),
+ (26,'<p>By registering for the event you will receive 1 free raffle ticket to our Chinese auction and 2 drink tickets.</p>\r\n<br/>\r\n\r\n<div style=\"width:100%; text-align:left;\"><iframe allowtransparency=\"true\" frameborder=\"0\" height=\"260\" hspace=\"0\" marginheight=\"5\" marginwidth=\"5\" scrolling=\"auto\" src=\"http://www.eventbrite.com/tickets-external?eid=8429604173&amp;ref=etckt&amp;v=2\" vspace=\"0\" width=\"100%\"></iframe>\r\n\r\n<div style=\"font-family:Helvetica, Arial; font-size:10px; padding:5px 0 5px; margin:2px; width:100%; text-align:left;\"><a href=\"http://www.eventbrite.com/r/etckt\" style=\"color:#ddd; text-decoration:none;\" target=\"_blank\">Sell Tickets</a> <span style=\"color:#ddd;\">through</span> <a href=\"http://www.eventbrite.com?ref=etckt\" style=\"color:#ddd; text-decoration:none;\" target=\"_blank\">Eventbrite</a></div>\r\n</div>\r\n','',3,'2013-09-21 21:38:18',0x00,1,7),
+ (27,'<p>An event like this takes planning and some pretty special people to pull it off. This is a quick thank you list to everyone that is helping make this event one to remember.</p>\r\n\r\n<p><strong>Windows on the River</strong><br />\r\n<a href=\"http://www.windowsontheriver.com\">http://www.windowsontheriver.com</a><br />\r\nThanks to Windows on the River for the River View Room. This is where the event is being held this year and we are all very excited about it!</p>\r\n\r\n<hr />\r\n<p><strong>Marino Brothers DJs</strong><br />\r\n<a href=\"http://www.marinobros.com/\">http://www.marinobros.com/</a><br />\r\nThe Marino Brothers Djs company will be represented by Ryan Longbrake and Jim Dunsworth. They have done the event every year and always do a great job of keeping the crowd going.</p>\r\n\r\n<hr />\r\n<p><strong>iTecGraphix</strong> <em>(David Forbes)</em><br />\r\n<a href=\"http://www.itecgraphix.com \">http://www.itecgraphix.com </a><br />\r\niTecGraphix is donating their printing services to print all of our postcard flyers.</p>\r\n\r\n<hr />\r\n<p><strong>Rock City Dance</strong><br />\r\n<a href=\"http://www.rockcitydance.com\">www.rockcitydance.com</a><br />\r\nRock City Dance Studio will be performing a special dance routine choreographed by Jayj Graham.</p>\r\n\r\n<hr />\r\n<p><strong>Raffle Donations</strong></p>\r\n\r\n<p>This is a list of people or companies who in no specific order helped contribute to our raffle. Thank you to all of you!</p>\r\n\r\n<div class=\"row\">\r\n<div class=\"span4\">\r\n<ul>\r\n	<li>Joe &amp; Annie Thomas</li>\r\n	<li>Marco Lussi</li>\r\n	<li>David Brais</li>\r\n	<li>Suzanne Scheiman</li>\r\n	<li>Craig Andrews</li>\r\n	<li>Stacy Gomez</li>\r\n	<li>Ben Gomez</li>\r\n	<li>Daniel Novak</li>\r\n	<li>Nicole Ventura</li>\r\n	<li>Mike Kartson</li>\r\n	<li>Elaine Riedel</li>\r\n	<li>Emily Dean</li>\r\n	<li>Steve Bartzack</li>\r\n	<li>Anna Ceccardi</li>\r\n	<li>Tanja Cengija</li>\r\n	<li>Amanda Eppele</li>\r\n	<li>Angelo Lardomita</li>\r\n	<li>Patty Smith</li>\r\n	<li>David Smith</li>\r\n	<li>Emilia Gonzalez</li>\r\n</ul>\r\n</div>\r\n\r\n<div class=\"span4\">\r\n<ul>\r\n	<li>Matt Nicholson</li>\r\n	<li>Alanna Mlakar</li>\r\n	<li>Dave Sweeney</li>\r\n	<li>Larry Crooks</li>\r\n	<li>Carl Dei</li>\r\n	<li>April Clark</li>\r\n	<li>Dan Vega</li>\r\n	<li>Liz Frederick</li>\r\n	<li>Tammy Leamons</li>\r\n	<li>Jenny Nickolof</li>\r\n	<li>Alex Ash</li>\r\n	<li>Ryan Longbrake</li>\r\n	<li>Tom Sasura</li>\r\n	<li>Tom Sasura</li>\r\n	<li>Joe Vega</li>\r\n	<li>Cash Solutions</li>\r\n	<li>Backstage</li>\r\n	<li>Table 45</li>\r\n	<li>Adobe</li>\r\n</ul>\r\n</div>\r\n</div>\r\n\r\n<p>&nbsp;</p>\r\n','initial commit',1,'2013-09-21 21:41:33',0x00,1,8),
+ (28,'<p>Please feel free to use the form below to send us your comments, suggestions or feedback regarding the toys for shots event.</p>\r\n','initial commit',1,'2013-09-21 21:42:46',0x00,1,9),
+ (29,'<p>Please feel free to use the form below to send us your comments, suggestions or feedback regarding the toys for shots event.</p>\r\n\r\n<p>&nbsp;</p>\r\n','',2,'2013-09-21 21:45:57',0x00,1,9),
+ (30,'<p>Please feel free to use the form below to send us your comments, suggestions or feedback regarding the toys for shots event.</p>\r\n\r\n<p><widget defaultvalue=\"\" slug=\"contact-us\" widgetdisplayname=\"FormBuilder\" widgetname=\"FormBuilder@contentbox-formbuilder\" widgettype=\"Module\" widgetudf=\"renderIt\"><widgetinfobar contenteditable=\"false\"><img align=\"left\" contenteditable=\"false\" height=\"20\" src=\"/modules/contentbox-admin/includes/images/widgets/box.png\" style=\"margin-right:5px;\" width=\"20\" />FormBuilder : slug = contact-us | widgetUDF = rende</widgetinfobar></widget></p>\r\n','',3,'2013-09-21 21:53:15',0x00,1,9),
+ (31,'<p>Please feel free to use the form below to send us your comments, suggestions or feedback regarding the toys for shots event.</p>\r\n\r\n<p><widget defaultvalue=\"\" slug=\"contact-us\" widgetdisplayname=\"FormBuilder\" widgetname=\"FormBuilder@contentbox-formbuilder\" widgettype=\"Module\" widgetudf=\"renderIt\"><widgetinfobar contenteditable=\"false\"><img align=\"left\" contenteditable=\"false\" height=\"20\" src=\"/modules/contentbox-admin/includes/images/widgets/box.png\" style=\"margin-right:5px;\" width=\"20\" />FormBuilder : slug = contact-us | widgetUDF = rende</widgetinfobar></widget>​</p>\r\n','',4,'2013-09-21 21:55:18',0x00,1,9),
+ (32,'<p>Please feel free to use the form below to send us your comments, suggestions or feedback regarding the toys for shots event.</p>\r\n\r\n','removed form builder form',5,'2013-09-21 21:57:42',0x00,1,9),
+ (35,'<p><strong>Who:</strong> Everyone is Welcome!<br />\r\n<strong>What:</strong> Toys for Shots Fundraiser/Holiday Party<br />\r\n<strong>Purpose:</strong> To raise funds and boxes of toys for the Marine\'s Toys for Tots Program<br />\r\n<strong>Food:</strong> Finger foods from Windows on the River and Cheesecakes plus other goodies from Marry Me Cheesecakes will be served at no charge<br />\r\n<strong>Drink:</strong> Cash Bar<br />\r\n<strong>What to Wear:</strong> It\'s a holiday party! Dress to impress!<br />\r\n<strong>Where:</strong></p>\r\n\r\n<p>Toys for Shots is an annual fundraiser/holiday party. The primary purpose of this very special event is to collect as many new, un-giftwrapped toys as we can for the Marine\'s Toys for Tots program. A couple of representatives from the Marines will be present at the event to collect all the donated toys. In keeping with the true spirit of the holidays, your gift of a toy(s) can spread so much joy and hope to a deserving Cleveland area child this Christmas. Last year we were able to collect 16 huge boxes of toys and hope to break that record this year! The Marine\'s will be prepared with a large truck this year to fit all the toys we expect to donate!</p>\r\n\r\n<p>Why the name, \"Toys for Shots\"? We thought it would entice folks to go out and buy a toy if we offered a free drink in return for their toy (1 toy for 1 shot...\"Toys for Shots\"). The idea worked and we are happy to offer it again this year. Bring at least one new, un-giftwrapped toy and we will give you a free drink ticket.</p>\r\n\r\n<p>Although our purpose is to provide a bit of holiday happiness to children in need, this event is a holiday party! Expect to dance and have a good time, mingle with the crowd, have some holiday cheer, enjoy the food and participate in the raffle. We have an awesome lineup of baskets and items to be raffled off this year, so be sure to bring a few extra bucks to purchase the chinese raffle tickets!</p>\r\n\r\n<p>This will mark the fifth year for this event and we have some very high expectations. The event itself has grown each year in donations, gifts and attendance. This year the planning committee is made up of more than twenty people. Not only are we planning on delivering the best Toys for Shots event yet, but we expect this to grow into one of Northeast Ohio\'s biggest toy drives. We hope you will join us for an amazing night on December 08, 2012.</p>\r\n\r\n<p>Thank You</p>\r\n\r\n<div class=\"signature\">Daniel Vega</div>\r\n\r\n<p><br />\r\nToys for Shots Founder</p>\r\n\r\n<p>&nbsp;</p>\r\n','',9,'2013-09-21 22:21:50',0x00,1,1),
+ (36,'<p><strong>Who:</strong> Anyone interested in having fun and helping out a good cause.<br />\r\n<strong>What:</strong> Toys for Tots Fundraiser Christmas Party.<br />\r\n<strong>Where:</strong> <a href=\"http://windowsontheriver.com\">Windows on the River</a><br />\r\n<strong>When:</strong> Saturday December 08, 2012 / 7:00 PM - 12:00 AM<br />\r\n<br />\r\n<cfoutput> <strong>Windows on the River</strong></cfoutput></p>\r\n\r\n<p>2000 Sycamore<br />\r\nCleveland OH 44113<br />\r\nPhone: 216.861.1445<br />\r\nWebsite: <a href=\"http://windowsontheriver.com\">Windows on the River</a></p>\r\n\r\n<p><strong>About The party</strong></p>\r\n\r\n<p>Windows on the River is located on the west bank of the Flats in downtown Cleveland, OH, on the second and third floors of the prestigious FirstEnergy Powerhouse building. The event will be held in the river room which is located on the second floor at the far end of the building. After you park and you are walking towards the building you will see a red awning. This is the entrance to the river room and at that point you should see signs for the event. This will be a private event, please <a href=\"#event.buildLink(\'rsvp\')#\">RSVP</a> so we have a accurate guest list and an idea of how many people are coming. If you bring a toy or check we will give you 2 drink tickets. This will hopefully encourage everyone to <a href=\"#event.buildLink(\'donate\')#\">bring a donation</a> to this wonderful cause. If you don\'t bring a toy there will be a $10.00 donation cover charge.</p>\r\n\r\n<p><strong>Chinese Auction</strong></p>\r\n\r\n<p>The difference between a raffle and a Chinese auction is that in a raffle with multiple prizes, there is one \"hat\" from which names are drawn, but in a Chinese auction each prize has its own \"hat\". This allows ticket buyers to choose which prize to focus on, as opposed to having a first, second, third, etc. prize.</p>\r\n\r\n<p>We are looking for <a href=\"#event.buildLink(\'donate\')#\">raffle prize donations</a> to help make this event a smash. We have some ideas for raffle baskets but if you have ideas please let us know. You can find out what raffle prizes have already been donated by <a href=\"#event.buildLink(\'raffle\')#\">visiting the raffle page</a>.</p>\r\n\r\n<p><strong>Entertainment</strong></p>\r\n\r\n<p>The private party room will have a DJ making it impossible to be bored.</p>\r\n\r\n<p><strong>Photo Booth &amp; Photographer</strong></p>\r\n\r\n<p>We will have a photo booth for you to take pictures with your friends. We will also have a photographer walking around the event capturing everything.</p>\r\n','',7,'2013-09-21 22:22:00',0x00,1,2),
+ (37,'<p>We have a many options for taking donations. Anything you can do to help out would not only be a great help to me but you would also be doing something good for a great cause. There is no donation to small, every little bit helps!</p>\r\n\r\n<p><strong>Making a Donation</strong></p>\r\n\r\n<p>If you would like to make a cash donation please click on the donate button below. Your donation will go towards raffle prizes or helping us cover the cost of running the event. Thank you for your support.</p>\r\n\r\n<form action=\"https://www.paypal.com/cgi-bin/webscr\" method=\"post\" target=\"_blank\"><input name=\"cmd\" type=\"hidden\" value=\"_donations\" /> <input name=\"business\" type=\"hidden\" value=\"danvega@gmail.com\" /> <input name=\"lc\" type=\"hidden\" value=\"US\" /> <input name=\"item_name\" type=\"hidden\" value=\"Toys For Shots\" /> <input name=\"no_note\" type=\"hidden\" value=\"0\" /> <input name=\"currency_code\" type=\"hidden\" value=\"USD\" /> <input name=\"bn\" type=\"hidden\" value=\"PP-DonationsBF:btn_donateCC_LG.gif:NonHostedGuest\" /> <input alt=\"PayPal - The safer, easier way to pay online!\" border=\"0\" name=\"submit\" src=\"https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif\" type=\"image\" /> <img alt=\"\" border=\"0\" height=\"1\" src=\"https://www.paypalobjects.com/en_US/i/scr/pixel.gif\" width=\"1\" /></form>\r\n\r\n<p><br />\r\n<strong>Attending the Party</strong></p>\r\n\r\n<p>If you are attending the party you can either bring a toy or a donation. If you bring a toy we ask that you bring them unwrapped. Please make sure the toy is not a weapon or any type of projectile. If you would like to give a cash donation please make your check out to \"Marine Toys for Tots Foundation\" or just \"Toys for Tots\".</p>\r\n\r\n<p><strong>Raffle Prizes</strong></p>\r\n\r\n<p>We are going to hold a prize raffle at the door along with a Chinese auction. All of the raffle ticket money will also be donated to the Toys for Tots program. We need as many raffle prizes as we can get our hands on to make sure people are buying tickets. Anything you can donate from a $5.00 gift card to a car is welcome! Again, every little bit helps out.<br />\r\n<a href=\"includes/pdf/DonationRequestLetter_ToysForShots_2012.pdf\" target=\"_blank\">Download our Donation Request Letter</a></p>\r\n\r\n<p><strong>Toys for Tots</strong></p>\r\n\r\n<p>If you can not attend the event and would rather just directly donate to the program please go right ahead. You can <a href=\"https://secure3.convio.net/tft/site/Donation2?idb=1689888040&amp;df_id=1233&amp;1233.donation=form1\" target=\"_blank\">click here to make </a>a donation on the Toys for Tots program website.</p>\r\n\r\n<p><strong>Volunteers </strong></p>\r\n\r\n<p>We are looking for anyone who would like to help out with the event. There are a couple different positions we could really use some help with.</p>\r\n\r\n<ul>\r\n	<li>We need you to spread the word about our event. The more people we can get to attend the more children we can help.</li>\r\n	<li>We are looking for a couple people to run the coat check this year.</li>\r\n</ul>\r\n\r\n<p>&nbsp;</p>\r\n','',4,'2013-09-21 22:22:09',0x01,1,3);
+INSERT INTO `cb_contentversion` (`contentVersionID`,`content`,`changelog`,`version`,`createdDate`,`isActive`,`FK_authorID`,`FK_contentID`) VALUES 
+ (38,'<p>With hopes of providing a larger donation, a Chinese Auction will be the center attraction for this year\'s fund raiser. To give this year\'s event the best opportunity for success, we are inviting a donation from the local pro-athletic organizations, restaurants, and entertainment businesses. Each donation will be organized in a \"themed\" style basket to generate the highest level of interest and raise as many bids as possible. Your participation will be greatly appreciated and rewarded by having your organization\'s name posted at the event and on the event website, if requested. Please help us make this Christmas happy for the communities\' children. If you are looking for ideas for door prizes or auction items to donate I have included last years items below.</p>\r\n\r\n<p><strong><a href=\"/index.cfm/__media/DonationRequestLetter_Toys for Shots_2013.pdf\">Download our donation Request Letter</a></strong></p>\r\n\r\n<h2>2012 Door Prizes</h2>\r\n\r\n<ul>\r\n	<li>Lake Erie Monsters Tickets</li>\r\n	<li>Nautica Queen Tickets</li>\r\n	<li>Improv Tickets</li>\r\n	<li>More Coming Soon...</li>\r\n</ul>\r\n\r\n<h2>2012 Raffle Items</h2>\r\n\r\n<p>This list is not final and may or may not change. We are not sure on how some of the items will be packaged yet but we do have a list of items that will be up for raffle.</p>\r\n\r\n<ul>\r\n	<li>iPad Mini 16GB White &amp; Silver</li>\r\n	<li>Irish Whiskey Package</li>\r\n	<li>Guinness</li>\r\n	<li>Jason Kipnis Autographed Baseball</li>\r\n	<li>Custom Cornhole Boards</li>\r\n	<li>4 Pack of Cavs tickets + Parking Pass</li>\r\n	<li>LockKeepers Inn Gift Certificate</li>\r\n	<li>Table 45 Dinner for Two + Valet Parking</li>\r\n	<li>Little Italy Package</li>\r\n	<li>Yoga Fitness Package</li>\r\n	<li>Ambiance Package</li>\r\n	<li>Adobe Package (Creative Suite 6 Web &amp; Design Premium)</li>\r\n	<li>CTOWN CrossFit 1 Month Membership</li>\r\n	<li>Browns vs Chiefs 11/9/2012 - 2 Club Level Tickets</li>\r\n	<li>Scentsy Package</li>\r\n	<li>Backstage Bar gift certificate</li>\r\n	<li>Ohio State theme Custom Blanket</li>\r\n	<li>Home Improvement Package (Furniture/Cabinets/Countertops)</li>\r\n	<li>Lottery Tree</li>\r\n	<li>$100 Gas Card</li>\r\n	<li>4 Pack of Lake County Captains Tickets</li>\r\n	<li>Rockin Cleveland 5 hour party bus rental</li>\r\n	<li>Cocktail Basket</li>\r\n	<li>Etscy custom jewelry package (TheStacyCollection)</li>\r\n	<li>HorseShoe Casino Package</li>\r\n	<li>Joe Thomas Autographed Jersey</li>\r\n	<li>Marry Me Gourmet Cheesecakes and Decadent Desserts Gift Certificate</li>\r\n	<li>Life Time Fitness Package</li>\r\n	<li>Ramon Sessions autographed Jersey</li>\r\n	<li>Cleveland Playhouse Tickets</li>\r\n	<li>Movie Basket</li>\r\n	<li>Mary Kay Packages</li>\r\n	<li>Personal Training Sessions</li>\r\n	<li>5 hour DJ Service</li>\r\n	<li>Bed Bath &amp; Beyond Gift Certificate</li>\r\n	<li>Windows on the River New Years Eve Package for 2</li>\r\n</ul>\r\n','',4,'2013-09-21 22:22:22',0x00,1,5),
+ (39,'<p>An event like this takes planning and some pretty special people to pull it off. This is a quick thank you list to everyone that is helping make this event one to remember.</p>\r\n\r\n<p><strong>Windows on the River</strong><br />\r\n<a href=\"http://www.windowsontheriver.com\">http://www.windowsontheriver.com</a><br />\r\nThanks to Windows on the River for the River View Room. This is where the event is being held this year and we are all very excited about it!</p>\r\n\r\n<hr />\r\n<p><strong>Marino Brothers DJs</strong><br />\r\n<a href=\"http://www.marinobros.com/\">http://www.marinobros.com/</a><br />\r\nThe Marino Brothers Djs company will be represented by Ryan Longbrake and Jim Dunsworth. They have done the event every year and always do a great job of keeping the crowd going.</p>\r\n\r\n<hr />\r\n<p><strong>iTecGraphix</strong> <em>(David Forbes)</em><br />\r\n<a href=\"http://www.itecgraphix.com \">http://www.itecgraphix.com </a><br />\r\niTecGraphix is donating their printing services to print all of our postcard flyers.</p>\r\n\r\n<hr />\r\n<p><strong>Rock City Dance</strong><br />\r\n<a href=\"http://www.rockcitydance.com\">www.rockcitydance.com</a><br />\r\nRock City Dance Studio will be performing a special dance routine choreographed by Jayj Graham.</p>\r\n\r\n<hr />\r\n<p><strong>Raffle Donations</strong></p>\r\n\r\n<p>This is a list of people or companies who in no specific order helped contribute to our raffle. Thank you to all of you!</p>\r\n\r\n<div class=\"row\">\r\n<div class=\"span4\">\r\n<ul>\r\n	<li>Joe &amp; Annie Thomas</li>\r\n	<li>Marco Lussi</li>\r\n	<li>David Brais</li>\r\n	<li>Suzanne Scheiman</li>\r\n	<li>Craig Andrews</li>\r\n	<li>Stacy Gomez</li>\r\n	<li>Ben Gomez</li>\r\n	<li>Daniel Novak</li>\r\n	<li>Nicole Ventura</li>\r\n	<li>Mike Kartson</li>\r\n	<li>Elaine Riedel</li>\r\n	<li>Emily Dean</li>\r\n	<li>Steve Bartzack</li>\r\n	<li>Anna Ceccardi</li>\r\n	<li>Tanja Cengija</li>\r\n	<li>Amanda Eppele</li>\r\n	<li>Angelo Lardomita</li>\r\n	<li>Patty Smith</li>\r\n	<li>David Smith</li>\r\n	<li>Emilia Gonzalez</li>\r\n</ul>\r\n</div>\r\n\r\n<div class=\"span4\">\r\n<ul>\r\n	<li>Matt Nicholson</li>\r\n	<li>Alanna Mlakar</li>\r\n	<li>Dave Sweeney</li>\r\n	<li>Larry Crooks</li>\r\n	<li>Carl Dei</li>\r\n	<li>April Clark</li>\r\n	<li>Dan Vega</li>\r\n	<li>Liz Frederick</li>\r\n	<li>Tammy Leamons</li>\r\n	<li>Jenny Nickolof</li>\r\n	<li>Alex Ash</li>\r\n	<li>Ryan Longbrake</li>\r\n	<li>Tom Sasura</li>\r\n	<li>Tom Sasura</li>\r\n	<li>Joe Vega</li>\r\n	<li>Cash Solutions</li>\r\n	<li>Backstage</li>\r\n	<li>Table 45</li>\r\n	<li>Adobe</li>\r\n</ul>\r\n</div>\r\n</div>\r\n\r\n<p>&nbsp;</p>\r\n','',2,'2013-09-21 22:22:36',0x01,1,8),
+ (40,'<p>Please feel free to use the form below to send us your comments, suggestions or feedback regarding the toys for shots event.</p>\r\n','',6,'2013-09-21 22:22:47',0x00,1,9),
+ (41,'<p><strong>Who:</strong> Everyone is Welcome!<br />\r\n<strong>What:</strong> Toys for Shots Fundraiser/Holiday Party<br />\r\n<strong>Purpose:</strong> To raise funds and boxes of toys for the Marine\'s Toys for Tots Program<br />\r\n<strong>What to Wear:</strong> It\'s a holiday party! Dress to impress!<br />\r\n<strong>Where:</strong> The Powerhouse </p>\r\n\r\n<p>Toys for Shots is an annual fundraiser/holiday party. The primary purpose of this very special event is to collect as many new, un-giftwrapped toys as we can for the Marine\'s Toys for Tots program. A couple of representatives from the Marines will be present at the event to collect all the donated toys. In keeping with the true spirit of the holidays, your gift of a toy(s) can spread so much joy and hope to a deserving Cleveland area child this Christmas. Last year we were able to collect 16 huge boxes of toys and hope to break that record this year! The Marine\'s will be prepared with a large truck this year to fit all the toys we expect to donate!</p>\r\n\r\n<p>Why the name, \"Toys for Shots\"? We thought it would entice folks to go out and buy a toy if we offered a free drink in return for their toy (1 toy for 1 shot...\"Toys for Shots\"). The idea worked and we are happy to offer it again this year. Bring at least one new, un-giftwrapped toy and we will give you a free drink ticket.</p>\r\n\r\n<p>Although our purpose is to provide a bit of holiday happiness to children in need, this event is a holiday party! Expect to dance and have a good time, mingle with the crowd, have some holiday cheer, enjoy the food and participate in the raffle. We have an awesome lineup of baskets and items to be raffled off this year, so be sure to bring a few extra bucks to purchase the chinese raffle tickets!</p>\r\n\r\n<p>This will mark the fifth year for this event and we have some very high expectations. The event itself has grown each year in donations, gifts and attendance. This year the planning committee is made up of more than twenty people. Not only are we planning on delivering the best Toys for Shots event yet, but we expect this to grow into one of Northeast Ohio\'s biggest toy drives. We hope you will join us for an amazing night on December 08, 2012.</p>\r\n\r\n<p>Thank You</p>\r\n\r\n<div class=\"signature\">Daniel Vega</div>\r\n\r\n<p><br />\r\nToys for Shots Founder</p>\r\n\r\n<p>&nbsp;</p>\r\n','',10,'2013-09-22 00:03:58',0x00,1,1),
+ (42,'<p><strong>Who:</strong> Everyone is Welcome!<br />\r\n<strong>What:</strong> Toys for Shots Fundraiser/Holiday Party<br />\r\n<strong>Purpose:</strong> To raise funds and boxes of toys for the Marine\'s Toys for Tots Program<br />\r\n<strong>What to Wear:</strong> It\'s a holiday party! Dress to impress!<br />\r\n<strong>Where:</strong> The Powerhouse</p>\r\n\r\n<p>Toys for Shots is an annual fundraiser/holiday party. The primary purpose of this very special event is to collect as many new, un-giftwrapped toys as we can for the Marine\'s Toys for Tots program. A couple of representatives from the Marines will be present at the event to collect all the donated toys. In keeping with the true spirit of the holidays, your gift of a toy(s) can spread so much joy and hope to a deserving Cleveland area child this Christmas. Last year we were able to collect 16 huge boxes of toys and hope to break that record this year! The Marine\'s will be prepared with a large truck this year to fit all the toys we expect to donate!</p>\r\n\r\n<p>Why the name, \"Toys for Shots\"? We thought it would entice folks to go out and buy a toy if we offered a free drink in return for their toy (1 toy for 1 shot...\"Toys for Shots\"). The idea worked and we are happy to offer it again this year. Bring at least one new, un-giftwrapped toy and we will give you a free drink ticket.</p>\r\n\r\n<p>Although our purpose is to provide a bit of holiday happiness to children in need, this event is a holiday party! Expect to dance and have a good time, mingle with the crowd, have some holiday cheer, enjoy the food and participate in the raffle. We have an awesome lineup of baskets and items to be raffled off this year, so be sure to bring a few extra bucks to purchase the chinese raffle tickets!</p>\r\n\r\n<p>This will mark the fifth year for this event and we have some very high expectations. The event itself has grown each year in donations, gifts and attendance. This year the planning committee is made up of more than twenty people. Not only are we planning on delivering the best Toys for Shots event yet, but we expect this to grow into one of Northeast Ohio\'s biggest toy drives. We hope you will join us for an amazing night on December 08, 2012.</p>\r\n\r\n<p>Thank You</p>\r\n\r\n<div class=\"signature\">Daniel Vega</div>\r\n\r\n<p><br />\r\nToys for Shots Founder</p>\r\n\r\n<h2>Toys for Tots - Christmas Morning</h2>\r\n\r\n<div><iframe allowfullscreen=\"\" frameborder=\"0\" height=\"315\" src=\"//www.youtube.com/embed/5BxO_hPGE4g\" width=\"420\"></iframe></div>\r\n\r\n<p>&nbsp;</p>\r\n','added marine commercial',11,'2013-09-22 00:06:53',0x00,1,1),
+ (43,'<p>With hopes of providing a larger donation, a Chinese Auction will be the center attraction for this year\'s fund raiser. To give this year\'s event the best opportunity for success, we are inviting a donation from the local pro-athletic organizations, restaurants, and entertainment businesses. Each donation will be organized in a \"themed\" style basket to generate the highest level of interest and raise as many bids as possible. Your participation will be greatly appreciated and rewarded by having your organization\'s name posted at the event and on the event website, if requested. Please help us make this Christmas happy for the communities\' children. If you are looking for ideas for door prizes or auction items to donate I have included last years items below.</p>\r\n\r\n<p><a href=\"/__media/DonationRequestLetter_Toys for Shots_2013.pdf\" target=\"_blank\"><strong>Download our donation Request Letter</strong></a></p>\r\n\r\n<h2>2012 Door Prizes</h2>\r\n\r\n<ul>\r\n	<li>Lake Erie Monsters Tickets</li>\r\n	<li>Nautica Queen Tickets</li>\r\n	<li>Improv Tickets</li>\r\n	<li>More Coming Soon...</li>\r\n</ul>\r\n\r\n<h2>2012 Raffle Items</h2>\r\n\r\n<p>This list is not final and may or may not change. We are not sure on how some of the items will be packaged yet but we do have a list of items that will be up for raffle.</p>\r\n\r\n<ul>\r\n	<li>iPad Mini 16GB White &amp; Silver</li>\r\n	<li>Irish Whiskey Package</li>\r\n	<li>Guinness</li>\r\n	<li>Jason Kipnis Autographed Baseball</li>\r\n	<li>Custom Cornhole Boards</li>\r\n	<li>4 Pack of Cavs tickets + Parking Pass</li>\r\n	<li>LockKeepers Inn Gift Certificate</li>\r\n	<li>Table 45 Dinner for Two + Valet Parking</li>\r\n	<li>Little Italy Package</li>\r\n	<li>Yoga Fitness Package</li>\r\n	<li>Ambiance Package</li>\r\n	<li>Adobe Package (Creative Suite 6 Web &amp; Design Premium)</li>\r\n	<li>CTOWN CrossFit 1 Month Membership</li>\r\n	<li>Browns vs Chiefs 11/9/2012 - 2 Club Level Tickets</li>\r\n	<li>Scentsy Package</li>\r\n	<li>Backstage Bar gift certificate</li>\r\n	<li>Ohio State theme Custom Blanket</li>\r\n	<li>Home Improvement Package (Furniture/Cabinets/Countertops)</li>\r\n	<li>Lottery Tree</li>\r\n	<li>$100 Gas Card</li>\r\n	<li>4 Pack of Lake County Captains Tickets</li>\r\n	<li>Rockin Cleveland 5 hour party bus rental</li>\r\n	<li>Cocktail Basket</li>\r\n	<li>Etscy custom jewelry package (TheStacyCollection)</li>\r\n	<li>HorseShoe Casino Package</li>\r\n	<li>Joe Thomas Autographed Jersey</li>\r\n	<li>Marry Me Gourmet Cheesecakes and Decadent Desserts Gift Certificate</li>\r\n	<li>Life Time Fitness Package</li>\r\n	<li>Ramon Sessions autographed Jersey</li>\r\n	<li>Cleveland Playhouse Tickets</li>\r\n	<li>Movie Basket</li>\r\n	<li>Mary Kay Packages</li>\r\n	<li>Personal Training Sessions</li>\r\n	<li>5 hour DJ Service</li>\r\n	<li>Bed Bath &amp; Beyond Gift Certificate</li>\r\n	<li>Windows on the River New Years Eve Package for 2</li>\r\n</ul>\r\n','',5,'2013-09-22 00:11:52',0x00,1,5),
+ (44,'<h2>Photo Albums</h2>\r\n\r\n<p>Coming Soon!<br />\r\n<br />\r\n<br />\r\n&nbsp;</p>\r\n\r\n<hr />\r\n<h2>Video</h2>\r\n\r\n<div><iframe allowfullscreen=\"\" frameborder=\"0\" height=\"360\" src=\"//www.youtube.com/embed/5BxO_hPGE4g?feature=player_embedded\" width=\"640\"></iframe></div>\r\n\r\n<p>&nbsp;</p>\r\n','',3,'2013-09-22 00:22:03',0x00,1,6),
+ (46,'<p>With hopes of providing a larger donation, a Chinese Auction will be the center attraction for this year\'s fund raiser. To give this year\'s event the best opportunity for success, we are inviting a donation from the local pro-athletic organizations, restaurants, and entertainment businesses. Each donation will be organized in a \"themed\" style basket to generate the highest level of interest and raise as many bids as possible. Your participation will be greatly appreciated and rewarded by having your organization\'s name posted at the event and on the event website, if requested. Please help us make this Christmas happy for the communities\' children. If you are looking for ideas for door prizes or auction items to donate I have included last years items below.</p>\r\n\r\n<p><a href=\"/__media/DonationRequestLetter_2013.pdf\"><strong>Download our donation Request Letter</strong></a></p>\r\n\r\n<h2>2012 Door Prizes</h2>\r\n\r\n<ul>\r\n	<li>Lake Erie Monsters Tickets</li>\r\n	<li>Nautica Queen Tickets</li>\r\n	<li>Improv Tickets</li>\r\n	<li>More Coming Soon...</li>\r\n</ul>\r\n\r\n<h2>2012 Raffle Items</h2>\r\n\r\n<p>This list is not final and may or may not change. We are not sure on how some of the items will be packaged yet but we do have a list of items that will be up for raffle.</p>\r\n\r\n<ul>\r\n	<li>iPad Mini 16GB White &amp; Silver</li>\r\n	<li>Irish Whiskey Package</li>\r\n	<li>Guinness</li>\r\n	<li>Jason Kipnis Autographed Baseball</li>\r\n	<li>Custom Cornhole Boards</li>\r\n	<li>4 Pack of Cavs tickets + Parking Pass</li>\r\n	<li>LockKeepers Inn Gift Certificate</li>\r\n	<li>Table 45 Dinner for Two + Valet Parking</li>\r\n	<li>Little Italy Package</li>\r\n	<li>Yoga Fitness Package</li>\r\n	<li>Ambiance Package</li>\r\n	<li>Adobe Package (Creative Suite 6 Web &amp; Design Premium)</li>\r\n	<li>CTOWN CrossFit 1 Month Membership</li>\r\n	<li>Browns vs Chiefs 11/9/2012 - 2 Club Level Tickets</li>\r\n	<li>Scentsy Package</li>\r\n	<li>Backstage Bar gift certificate</li>\r\n	<li>Ohio State theme Custom Blanket</li>\r\n	<li>Home Improvement Package (Furniture/Cabinets/Countertops)</li>\r\n	<li>Lottery Tree</li>\r\n	<li>$100 Gas Card</li>\r\n	<li>4 Pack of Lake County Captains Tickets</li>\r\n	<li>Rockin Cleveland 5 hour party bus rental</li>\r\n	<li>Cocktail Basket</li>\r\n	<li>Etscy custom jewelry package (TheStacyCollection)</li>\r\n	<li>HorseShoe Casino Package</li>\r\n	<li>Joe Thomas Autographed Jersey</li>\r\n	<li>Marry Me Gourmet Cheesecakes and Decadent Desserts Gift Certificate</li>\r\n	<li>Life Time Fitness Package</li>\r\n	<li>Ramon Sessions autographed Jersey</li>\r\n	<li>Cleveland Playhouse Tickets</li>\r\n	<li>Movie Basket</li>\r\n	<li>Mary Kay Packages</li>\r\n	<li>Personal Training Sessions</li>\r\n	<li>5 hour DJ Service</li>\r\n	<li>Bed Bath &amp; Beyond Gift Certificate</li>\r\n	<li>Windows on the River New Years Eve Package for 2</li>\r\n</ul>\r\n','',6,'2013-09-22 01:22:29',0x00,1,5),
+ (47,'<p>Please feel free to use the form below to send us your comments, suggestions or feedback regarding the toys for shots event.</p>\r\n\r\n<form action=\"#event.buildLink(\'contact.save\')#\" class=\"form-horizontal\" id=\"frmContact\" method=\"post\">\r\n<div class=\"control-group\"><label class=\"control-label\" for=\"name\"><span class=\"required\">*</span> Name</label>\r\n\r\n<div class=\"controls\"><input class=\"input-xlarge\" id=\"name\" name=\"name\" type=\"text\" value=\"#rc.contact.getName()#\" /></div>\r\n</div>\r\n\r\n<div class=\"control-group\"><label class=\"control-label\" for=\"email\"><span class=\"required\">*</span> Email Address</label>\r\n\r\n<div class=\"controls\"><input class=\"input-xlarge\" id=\"email\" name=\"email\" type=\"text\" value=\"#rc.contact.getEmail()#\" /></div>\r\n</div>\r\n\r\n<div class=\"control-group\"><label class=\"control-label\" for=\"phone\">Phone</label>\r\n\r\n<div class=\"controls\"><input class=\"input-xlarge\" id=\"phone\" name=\"phone\" type=\"text\" value=\"#rc.contact.getPhone()#\" /></div>\r\n</div>\r\n\r\n<div class=\"control-group\"><label class=\"control-label\" for=\"comments\"><span class=\"required\">*</span> Comments</label>\r\n\r\n<div class=\"controls\"><textarea class=\"input-xlarge\" id=\"comments\" name=\"comments\" rows=\"3\">#rc.contact.getComments()#</textarea>\r\n\r\n<p class=\"help-block\">We are still searching for donations &amp; volunteers so please let us know if you can help with either.</p>\r\n</div>\r\n</div>\r\n\r\n<div class=\"form-actions\"><button class=\"btn btn-primary\" name=\"submit\" type=\"submit\">Send</button></div>\r\n</cfinclude></form>\r\n','',7,'2013-09-22 01:46:27',0x00,1,9),
+ (48,'<p>Please feel free to use the form below to send us your comments, suggestions or feedback regarding the toys for shots event.</p>','',8,'2013-09-22 02:01:26',0x00,1,9),
+ (49,'<p><widget defaultvalue=\"\" slug=\"contact\" widgetdisplayname=\"FormBuilder\" widgetname=\"FormBuilder@contentbox-formbuilder\" widgettype=\"Module\" widgetudf=\"renderIt\"><widgetinfobar contenteditable=\"false\"><img align=\"left\" contenteditable=\"false\" height=\"20\" src=\"/modules/contentbox-admin/includes/images/widgets/box.png\" style=\"margin-right:5px;\" width=\"20\" />FormBuilder : slug = contact | widgetUDF = rende</widgetinfobar></widget>​</p>\r\n','adding the form',9,'2013-09-22 10:47:04',0x00,1,9),
+ (50,'<p><widget defaultvalue=\"\" slug=\"contact\" widgetdisplayname=\"FormBuilder\" widgetname=\"FormBuilder@contentbox-formbuilder\" widgettype=\"Module\" widgetudf=\"renderIt\"><widgetinfobar contenteditable=\"false\"><img align=\"left\" contenteditable=\"false\" height=\"20\" src=\"/modules/contentbox-admin/includes/images/widgets/box.png\" style=\"margin-right:5px;\" width=\"20\" />FormBuilder : slug = contact | UDF = renderIt()</widgetinfobar></widget>​</p>\r\n','',10,'2013-09-22 10:49:17',0x00,1,9),
+ (51,'<p><widget defaultvalue=\"\" slug=\"contact\" widgetdisplayname=\"FormBuilder\" widgetname=\"FormBuilder@contentbox-formbuilder\" widgettype=\"Module\" widgetudf=\"renderIt\"><widgetinfobar contenteditable=\"false\"><img align=\"left\" contenteditable=\"false\" height=\"20\" src=\"/modules/contentbox-admin/includes/images/widgets/box.png\" style=\"margin-right:5px;\" width=\"20\" />FormBuilder : slug = contact | UDF = renderIt()</widgetinfobar></widget>​</p>\r\n<script>\r\n  $(function(){\r\n  	$(\'#frmContactForm form\').addClass(\'form-horizontal\');\r\n  });\r\n</script>','',11,'2013-09-22 10:52:11',0x00,1,9),
+ (52,'<p>Please feel free to use the form below to send us your comments, suggestions or feedback regarding the toys for shots event.</p>\r\n\r\n<p><widget defaultvalue=\"\" slug=\"contact\" widgetdisplayname=\"FormBuilder\" widgetname=\"FormBuilder@contentbox-formbuilder\" widgettype=\"Module\" widgetudf=\"renderIt\"><widgetinfobar contenteditable=\"false\"><img align=\"left\" contenteditable=\"false\" height=\"20\" src=\"/modules/contentbox-admin/includes/images/widgets/box.png\" style=\"margin-right:5px;\" width=\"20\" />FormBuilder : slug = contact | UDF = renderIt()</widgetinfobar></widget>​</p>\r\n<script>\r\n  $(function(){\r\n  	$(\'#frmContactForm form\').addClass(\'form-horizontal\');\r\n  });\r\n</script>','',12,'2013-09-22 10:54:12',0x01,1,9),
+ (53,'<p>&nbsp;</p>\r\n\r\n<div style=\"width:195px; text-align:center;\"><iframe allowtransparency=\"true\" frameborder=\"0\" height=\"536\" marginheight=\"0\" marginwidth=\"0\" scrolling=\"no\" src=\"http://www.eventbrite.com/countdown-widget?eid=8429604173\" width=\"195\"></iframe>\r\n\r\n<div style=\"font-family:Helvetica, Arial; font-size:10px; padding:5px 0 5px; margin:2px; width:195px; text-align:center;\"><a href=\"http://www.eventbrite.com/r/ecount\" style=\"color:##ddd; text-decoration:none;\" target=\"_blank\">Online Ticketing</a><span style=\"color:##ddd;\"> for </span><a href=\"https://toysforshots.eventbrite.com?ref=ecount\" style=\"color:##ddd; text-decoration:none;\" target=\"_blank\">6th Annual Toys For Shots</a> <span style=\"color:##ddd;\">powered by</span> <a href=\"http://www.eventbrite.com?ref=ecount\" style=\"color:##ddd; text-decoration:none;\" target=\"_blank\">Eventbrite</a></div>\r\n</div>\r\n\r\n<p><a href=\"http://www.toysfortots.org\" target=\"_blank\"><img alt=\"Toys For Tots\" src=\"/__media/tft_logo.jpg\" style=\"width: 249px; height: 106px;\" /></a></p>\r\n<p><a href=\"http://www.windowsontheriver.com\" target=\"_blank\"><img alt=\"Windows on the River\" src=\"/__media/windows.jpg\" style=\"width: 250px; height: 241px;\" /></a></p>\r\n<p><a href=\"http://spotcleveland.com\" target=\"_blank\"><img alt=\"Spot Cleveland\" src=\"/__media/SpotCleveland.jpg\" style=\"width: 250px; height: 75px;\" /></a></p>\r\n','initial commit',1,'2013-09-22 11:20:44',0x01,1,11),
+ (54,'<div class=\"carousel slide\" data-interval=\"3000\" id=\"slider\">\r\n<ol class=\"carousel-indicators\">\r\n	<li class=\"active\" data-slide-to=\"0\" data-target=\"##slider\">&nbsp;</li>\r\n</ol>\r\n<!-- Carousel items -->\r\n\r\n<div class=\"carousel-inner\">\r\n<div class=\"active item\"><img src=\"__media/slider_01.jpg\" />\r\n<div class=\"carousel-caption\">\r\n<h4>The Marines</h4>\r\n\r\n<p>The Marines were out in full force at last years event.</p>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n','initial commit',1,'2013-09-22 11:57:11',0x00,1,12),
+ (55,'<p><widget defaultvalue=\"\" slug=\"slider\" widgetdisplayname=\"ContentStore\" widgetname=\"ContentStore\" widgettype=\"Core\" widgetudf=\"renderIt\"><widgetinfobar contenteditable=\"false\"><img align=\"left\" contenteditable=\"false\" height=\"20\" src=\"/modules/contentbox-admin/includes/images/widgets/window-text.png\" style=\"margin-right:5px;\" width=\"20\" />ContentStore : slug = slider | widgetUDF = rende</widgetinfobar></widget>​</p>\r\n\r\n<p><strong>Who:</strong> Everyone is Welcome!<br />\r\n<strong>What:</strong> Toys for Shots Fundraiser/Holiday Party<br />\r\n<strong>Purpose:</strong> To raise funds and boxes of toys for the Marine\'s Toys for Tots Program<br />\r\n<strong>What to Wear:</strong> It\'s a holiday party! Dress to impress!<br />\r\n<strong>Where:</strong> The Powerhouse</p>\r\n\r\n<p>Toys for Shots is an annual fundraiser/holiday party. The primary purpose of this very special event is to collect as many new, un-giftwrapped toys as we can for the Marine\'s Toys for Tots program. A couple of representatives from the Marines will be present at the event to collect all the donated toys. In keeping with the true spirit of the holidays, your gift of a toy(s) can spread so much joy and hope to a deserving Cleveland area child this Christmas. Last year we were able to collect 16 huge boxes of toys and hope to break that record this year! The Marine\'s will be prepared with a large truck this year to fit all the toys we expect to donate!</p>\r\n\r\n<p>Why the name, \"Toys for Shots\"? We thought it would entice folks to go out and buy a toy if we offered a free drink in return for their toy (1 toy for 1 shot...\"Toys for Shots\"). The idea worked and we are happy to offer it again this year. Bring at least one new, un-giftwrapped toy and we will give you a free drink ticket.</p>\r\n\r\n<p>Although our purpose is to provide a bit of holiday happiness to children in need, this event is a holiday party! Expect to dance and have a good time, mingle with the crowd, have some holiday cheer, enjoy the food and participate in the raffle. We have an awesome lineup of baskets and items to be raffled off this year, so be sure to bring a few extra bucks to purchase the chinese raffle tickets!</p>\r\n\r\n<p>This will mark the fifth year for this event and we have some very high expectations. The event itself has grown each year in donations, gifts and attendance. This year the planning committee is made up of more than twenty people. Not only are we planning on delivering the best Toys for Shots event yet, but we expect this to grow into one of Northeast Ohio\'s biggest toy drives. We hope you will join us for an amazing night on December 08, 2012.</p>\r\n\r\n<p>Thank You</p>\r\n\r\n<div class=\"signature\">Daniel Vega</div>\r\n\r\n<p><br />\r\nToys for Shots Founder</p>\r\n\r\n<h2>Toys for Tots - Christmas Morning</h2>\r\n\r\n<div><iframe allowfullscreen=\"\" frameborder=\"0\" height=\"315\" src=\"//www.youtube.com/embed/5BxO_hPGE4g\" width=\"420\"></iframe></div>\r\n\r\n<p>&nbsp;</p>\r\n','added slider widget',12,'2013-09-22 12:01:13',0x00,1,1),
+ (56,'<p><strong>Who:</strong> Everyone is Welcome!<br />\r\n<strong>What:</strong> Toys for Shots Fundraiser/Holiday Party<br />\r\n<strong>Purpose:</strong> To raise funds and boxes of toys for the Marine\'s Toys for Tots Program<br />\r\n<strong>What to Wear:</strong> It\'s a holiday party! Dress to impress!<br />\r\n<strong>Where:</strong> The Powerhouse</p>\r\n\r\n<p>Toys for Shots is an annual fundraiser/holiday party. The primary purpose of this very special event is to collect as many new, un-giftwrapped toys as we can for the Marine\'s Toys for Tots program. A couple of representatives from the Marines will be present at the event to collect all the donated toys. In keeping with the true spirit of the holidays, your gift of a toy(s) can spread so much joy and hope to a deserving Cleveland area child this Christmas. Last year we were able to collect 16 huge boxes of toys and hope to break that record this year! The Marine\'s will be prepared with a large truck this year to fit all the toys we expect to donate!</p>\r\n\r\n<p>Why the name, \"Toys for Shots\"? We thought it would entice folks to go out and buy a toy if we offered a free drink in return for their toy (1 toy for 1 shot...\"Toys for Shots\"). The idea worked and we are happy to offer it again this year. Bring at least one new, un-giftwrapped toy and we will give you a free drink ticket.</p>\r\n\r\n<p>Although our purpose is to provide a bit of holiday happiness to children in need, this event is a holiday party! Expect to dance and have a good time, mingle with the crowd, have some holiday cheer, enjoy the food and participate in the raffle. We have an awesome lineup of baskets and items to be raffled off this year, so be sure to bring a few extra bucks to purchase the chinese raffle tickets!</p>\r\n\r\n<p>This will mark the fifth year for this event and we have some very high expectations. The event itself has grown each year in donations, gifts and attendance. This year the planning committee is made up of more than twenty people. Not only are we planning on delivering the best Toys for Shots event yet, but we expect this to grow into one of Northeast Ohio\'s biggest toy drives. We hope you will join us for an amazing night on December 08, 2012.</p>\r\n\r\n<p>Thank You</p>\r\n\r\n<div class=\"signature\">Daniel Vega</div>\r\n\r\n<p><br />\r\nToys for Shots Founder</p>\r\n\r\n<h2>Toys for Tots - Christmas Morning</h2>\r\n\r\n<div><iframe allowfullscreen=\"\" frameborder=\"0\" height=\"315\" src=\"//www.youtube.com/embed/5BxO_hPGE4g\" width=\"420\"></iframe></div>\r\n\r\n<p>&nbsp;</p>\r\n','removing slider',13,'2013-09-22 12:02:00',0x00,1,1),
+ (57,'<p><strong>Who:</strong> Everyone is Welcome!<br />\r\n<strong>What:</strong> Toys for Shots Fundraiser/Holiday Party<br />\r\n<strong>Purpose:</strong> To raise funds and boxes of toys for the Marine\'s Toys for Tots Program<br />\r\n<strong>What to Wear:</strong> It\'s a holiday party! Dress to impress!<br />\r\n<strong>Where:</strong> The Powerhouse</p>\r\n\r\n<p>Toys for Shots is an annual fundraiser/holiday party. The primary purpose of this very special event is to collect as many new, un-giftwrapped toys as we can for the Marine\'s Toys for Tots program. A couple of representatives from the Marines will be present at the event to collect all the donated toys. In keeping with the true spirit of the holidays, your gift of a toy(s) can spread so much joy and hope to a deserving Cleveland area child this Christmas. Last year we were able to collect 16 huge boxes of toys and hope to break that record this year! The Marine\'s will be prepared with a large truck this year to fit all the toys we expect to donate!</p>\r\n\r\n<p>Why the name, \"Toys for Shots\"? We thought it would entice folks to go out and buy a toy if we offered a free drink in return for their toy (1 toy for 1 shot...\"Toys for Shots\"). The idea worked and we are happy to offer it again this year. Bring at least one new, un-giftwrapped toy and we will give you a free drink ticket.</p>\r\n\r\n<p>Although our purpose is to provide a bit of holiday happiness to children in need, this event is a holiday party! Expect to dance and have a good time, mingle with the crowd, have some holiday cheer, enjoy the food and participate in the raffle. We have an awesome lineup of baskets and items to be raffled off this year, so be sure to bring a few extra bucks to purchase the chinese raffle tickets!</p>\r\n\r\n<p>This will mark the fifth year for this event and we have some very high expectations. The event itself has grown each year in donations, gifts and attendance. This year the planning committee is made up of more than twenty people. Not only are we planning on delivering the best Toys for Shots event yet, but we expect this to grow into one of Northeast Ohio\'s biggest toy drives. We hope you will join us for an amazing night on December 08, 2012.</p>\r\n\r\n<p>Thank You</p>\r\n\r\n<div class=\"signature\">Daniel Vega</div>\r\n\r\n<p><br />\r\nToys for Shots Founder</p>\r\n\r\n<h2>Toys for Tots - Christmas Morning</h2>\r\n\r\n<div><iframe allowfullscreen=\"\" frameborder=\"0\" height=\"315\" src=\"//www.youtube.com/embed/5BxO_hPGE4g\" width=\"420\"></iframe></div>\r\n\r\n<p>&nbsp;</p>\r\n','changing layout to home page',14,'2013-09-22 12:03:14',0x00,1,1),
+ (58,'<div class=\"carousel slide\" data-interval=\"3000\" id=\"slider\">\r\n<ol class=\"carousel-indicators\">\r\n	<li class=\"active\" data-slide-to=\"0\" data-target=\"##slider\">&nbsp;</li>\r\n</ol>\r\n\r\n<div class=\"carousel-inner\">\r\n<div class=\"active item\"><img src=\"__media/slider_01.jpg\" />\r\n<div class=\"carousel-caption\">\r\n<h4>The Marines</h4>\r\n\r\n<p>The Marines are always out in full force at our event.</p>\r\n</div>\r\n</div>\r\n\r\n<div class=\"active item\"><img src=\"__media/slider_02.jpg\" />\r\n<div class=\"carousel-caption\">\r\n<h4>Santa</h4>\r\n\r\n<p>Mr &amp; Mrs Claus made an appearance last year and I hear they will be back again this year.</p>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n','',2,'2013-09-22 21:12:05',0x00,1,12),
+ (59,'<div class=\"carousel slide\" data-interval=\"3000\" id=\"slider\">\r\n<ol class=\"carousel-indicators\">\r\n	<li class=\"active\" data-slide-to=\"0\" data-target=\"##slider\">&nbsp;</li>\r\n	<li data-slide-to=\"1\" data-target=\"##slider\">&nbsp;</li>\r\n</ol>\r\n\r\n<div class=\"carousel-inner\">\r\n<div class=\"active item\"><img src=\"__media/slider_01.jpg\" />\r\n<div class=\"carousel-caption\">\r\n<h4>The Marines</h4>\r\n\r\n<p>The Marines are always well represented at the 2nd biggest toy drive in Northeast Ohio.</p>\r\n</div>\r\n</div>\r\n\r\n<div class=\"item\"><img src=\"__media/slider_02.jpg\" />\r\n<div class=\"carousel-caption\">\r\n<h4>Santa</h4>\r\n\r\n<p>Mr &amp; Mrs Claus made an appearance last year and I hear they will be back again this year.</p>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n','',3,'2013-09-22 21:15:53',0x00,1,12),
+ (60,'<p>Thanks to my good friend Matt and a lot of work over the weekend we finally have our facebook page live.&nbsp;</p>\r\n\r\n<p><img alt=\"Toys For Shots facebook page\" src=\"/__media/blog/tfs_facebook page.png\" /></p>\r\n','initial commit',1,'2013-09-22 21:47:25',0x00,1,13),
+ (61,'<p>Thanks to my good friend Matt and a lot of work over the weekend we finally have our facebook page live.&nbsp;</p>\r\n\r\n<p><img alt=\"\" src=\"/__media/blog/tfs_facebookpage.png\" /></p>\r\n','',2,'2013-09-22 21:49:03',0x00,1,13),
+ (62,'<div class=\"carousel slide\" data-interval=\"3000\" id=\"slider\">\r\n<ol class=\"carousel-indicators\">\r\n	<li class=\"active\" data-slide-to=\"0\" data-target=\"##slider\">&nbsp;</li>\r\n	<li data-slide-to=\"1\" data-target=\"##slider\">&nbsp;</li>\r\n</ol>\r\n\r\n<div class=\"carousel-inner\">\r\n<div class=\"active item\"><img src=\"__media/slider_01.jpg\" />\r\n<div class=\"carousel-caption\">\r\n<h4>The Marines</h4>\r\n\r\n<p>The Marines are always well represented at the 2nd biggest toy drive in Northeast Ohio.</p>\r\n</div>\r\n</div>\r\n\r\n<div class=\"item\"><img src=\"__media/slider_02.jpg\" />\r\n<div class=\"carousel-caption\">\r\n<h4>Santa Claus</h4>\r\n\r\n<p>Mr &amp; Mrs Claus made an appearance last year and I hear they will be back again this year.</p>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n','',4,'2013-09-23 22:31:33',0x01,1,12),
+ (63,'<p>Thanks to my good friend Matt and a lot of work over the weekend we finally have our facebook page live.&nbsp;</p>\r\n\r\n<p><img alt=\"\" src=\"/__media/blog/tfs_facebookpage.png\" /></p>\r\n','',3,'2013-09-25 23:05:20',0x00,1,13),
+ (64,'<p>With hopes of providing a larger donation, a Chinese Auction will be the center attraction for this year\'s fund raiser. To give this year\'s event the best opportunity for success, we are inviting a donation from the local pro-athletic organizations, restaurants, and entertainment businesses. Each donation will be organized in a \"themed\" style basket to generate the highest level of interest and raise as many bids as possible. Your participation will be greatly appreciated and rewarded by having your organization\'s name posted at the event and on the event website, if requested. Please help us make this Christmas happy for the communities\' children. If you are looking for ideas for door prizes or auction items to donate I have included last years items below.</p>\r\n\r\n<p><a href=\"/__media/DonationRequestLetter_2013.pdf\" target=\"_blank\"><strong>Download our donation Request Letter</strong></a></p>\r\n\r\n<h2>2012 Door Prizes</h2>\r\n\r\n<ul>\r\n	<li>Lake Erie Monsters Tickets</li>\r\n	<li>Nautica Queen Tickets</li>\r\n	<li>Improv Tickets</li>\r\n	<li>More Coming Soon...</li>\r\n</ul>\r\n\r\n<h2>2012 Raffle Items</h2>\r\n\r\n<p>This list is not final and may or may not change. We are not sure on how some of the items will be packaged yet but we do have a list of items that will be up for raffle.</p>\r\n\r\n<ul>\r\n	<li>iPad Mini 16GB White &amp; Silver</li>\r\n	<li>Irish Whiskey Package</li>\r\n	<li>Guinness</li>\r\n	<li>Jason Kipnis Autographed Baseball</li>\r\n	<li>Custom Cornhole Boards</li>\r\n	<li>4 Pack of Cavs tickets + Parking Pass</li>\r\n	<li>LockKeepers Inn Gift Certificate</li>\r\n	<li>Table 45 Dinner for Two + Valet Parking</li>\r\n	<li>Little Italy Package</li>\r\n	<li>Yoga Fitness Package</li>\r\n	<li>Ambiance Package</li>\r\n	<li>Adobe Package (Creative Suite 6 Web &amp; Design Premium)</li>\r\n	<li>CTOWN CrossFit 1 Month Membership</li>\r\n	<li>Browns vs Chiefs 11/9/2012 - 2 Club Level Tickets</li>\r\n	<li>Scentsy Package</li>\r\n	<li>Backstage Bar gift certificate</li>\r\n	<li>Ohio State theme Custom Blanket</li>\r\n	<li>Home Improvement Package (Furniture/Cabinets/Countertops)</li>\r\n	<li>Lottery Tree</li>\r\n	<li>$100 Gas Card</li>\r\n	<li>4 Pack of Lake County Captains Tickets</li>\r\n	<li>Rockin Cleveland 5 hour party bus rental</li>\r\n	<li>Cocktail Basket</li>\r\n	<li>Etscy custom jewelry package (TheStacyCollection)</li>\r\n	<li>HorseShoe Casino Package</li>\r\n	<li>Joe Thomas Autographed Jersey</li>\r\n	<li>Marry Me Gourmet Cheesecakes and Decadent Desserts Gift Certificate</li>\r\n	<li>Life Time Fitness Package</li>\r\n	<li>Ramon Sessions autographed Jersey</li>\r\n	<li>Cleveland Playhouse Tickets</li>\r\n	<li>Movie Basket</li>\r\n	<li>Mary Kay Packages</li>\r\n	<li>Personal Training Sessions</li>\r\n	<li>5 hour DJ Service</li>\r\n	<li>Bed Bath &amp; Beyond Gift Certificate</li>\r\n	<li>Windows on the River New Years Eve Package for 2</li>\r\n</ul>\r\n','',7,'2013-10-07 21:36:49',0x01,1,5),
+ (65,'<h2>Photo Albums</h2>\r\n\r\n<p>View our Photo Albums that include past events on our <a href=\"https://www.facebook.com/media/set/?set=a.204197966424330.1073741835.203224456521681&amp;type=3\" target=\"_blank\">facebook page</a>.</p>\r\n\r\n<p><a href=\"https://www.facebook.com/media/set/?set=a.204197966424330.1073741835.203224456521681&amp;type=3\" target=\"_blank\"><img alt=\"\" src=\"/__media/tfs_facebook_albums.png\" style=\"width: 851px; height: 667px;\" /></a><br />\r\n&nbsp;</p>\r\n\r\n<hr />\r\n<h2>Video</h2>\r\n\r\n<div><iframe allowfullscreen=\"\" frameborder=\"0\" height=\"360\" src=\"//www.youtube.com/embed/5BxO_hPGE4g?feature=player_embedded\" width=\"640\"></iframe></div>\r\n\r\n<p>&nbsp;</p>\r\n','',4,'2013-10-07 21:42:04',0x01,1,6),
+ (66,'<p>By registering for the event you will receive 1 free raffle ticket to our Chinese auction and 2 drink tickets.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<div style=\"width:100%; text-align:left;\"><iframe allowtransparency=\"true\" frameborder=\"0\" height=\"280\" hspace=\"0\" marginheight=\"5\" marginwidth=\"5\" scrolling=\"no\" src=\"http://www.eventbrite.com/tickets-external?eid=8429604173&amp;ref=etckt&amp;v=2\" vspace=\"0\" width=\"100%\"></iframe>\r\n\r\n<div style=\"font-family:Helvetica, Arial; font-size:10px; padding:5px 0 5px; margin:2px; width:100%; text-align:left;\"><a href=\"http://www.eventbrite.com/r/etckt\" style=\"color:#ddd; text-decoration:none;\" target=\"_blank\">Sell Tickets</a> <span style=\"color:#ddd;\">through</span> <a href=\"http://www.eventbrite.com?ref=etckt\" style=\"color:#ddd; text-decoration:none;\" target=\"_blank\">Eventbrite</a></div>\r\n</div>\r\n\r\n<p>&nbsp;</p>\r\n','',4,'2013-10-07 21:43:40',0x01,1,7),
+ (67,'<p><strong>Who:</strong> Everyone is Welcome!<br />\r\n<strong>What:</strong> Toys for Shots Fundraiser/Holiday Party<br />\r\n<strong>Purpose:</strong> To raise funds and boxes of toys for the Marine\'s Toys for Tots Program<br />\r\n<strong>What to Wear:</strong> It\'s a holiday party! Dress to impress!<br />\r\n<strong>Where:</strong> The Powerhouse<br />\r\n<strong>When:</strong>Saturday December 08, 2012 / 7:00 PM - 12:00 AM</p>\r\n\r\n<p>Toys for Shots is an annual fundraiser/holiday party. The primary purpose of this very special event is to collect as many new, un-giftwrapped toys as we can for the Marine\'s Toys for Tots program. A couple of representatives from the Marines will be present at the event to collect all the donated toys. In keeping with the true spirit of the holidays, your gift of a toy(s) can spread so much joy and hope to a deserving Cleveland area child this Christmas. Last year we were able to collect 16 huge boxes of toys and hope to break that record this year! The Marine\'s will be prepared with a large truck this year to fit all the toys we expect to donate!</p>\r\n\r\n<p>Why the name, \"Toys for Shots\"? We thought it would entice folks to go out and buy a toy if we offered a free drink in return for their toy (1 toy for 1 shot...\"Toys for Shots\"). The idea worked and we are happy to offer it again this year. Bring at least one new, un-giftwrapped toy and we will give you a free drink ticket.</p>\r\n\r\n<p>Although our purpose is to provide a bit of holiday happiness to children in need, this event is a holiday party! Expect to dance and have a good time, mingle with the crowd, have some holiday cheer, enjoy the food and participate in the raffle. We have an awesome lineup of baskets and items to be raffled off this year, so be sure to bring a few extra bucks to purchase the chinese raffle tickets!</p>\r\n\r\n<p>This will mark the fifth year for this event and we have some very high expectations. The event itself has grown each year in donations, gifts and attendance. This year the planning committee is made up of more than twenty people. Not only are we planning on delivering the best Toys for Shots event yet, but we expect this to grow into one of Northeast Ohio\'s biggest toy drives. We hope you will join us for an amazing night on December 08, 2012.</p>\r\n\r\n<p>Thank You</p>\r\n\r\n<div class=\"signature\">Daniel Vega</div>\r\n\r\n<p><br />\r\nToys for Shots Founder</p>\r\n\r\n<h2>Toys for Tots - Christmas Morning</h2>\r\n\r\n<div><iframe allowfullscreen=\"\" frameborder=\"0\" height=\"315\" src=\"//www.youtube.com/embed/5BxO_hPGE4g\" width=\"420\"></iframe></div>\r\n\r\n<p>&nbsp;</p>\r\n','',15,'2013-10-07 22:48:54',0x00,1,1),
+ (68,'<p><strong>Who:</strong> Anyone interested in having fun and helping out a good cause.<br />\r\n<strong>What:</strong> Toys for Tots Fundraiser Christmas Party.<br />\r\n<strong>Where:</strong> <a href=\"http://windowsontheriver.com\">Windows on the River</a><br />\r\n<strong>When:&nbsp;</strong>Saturday December 08, 2012 / 7:00 PM - 12:00 AM</p>\r\n\r\n<p>2000 Sycamore<br />\r\nCleveland OH 44113<br />\r\nPhone: 216.861.1445<br />\r\nWebsite: <a href=\"http://windowsontheriver.com\">Windows on the River</a></p>\r\n\r\n<p><strong>About The party</strong></p>\r\n\r\n<p>Windows on the River is located on the west bank of the Flats in downtown Cleveland, OH, on the second and third floors of the prestigious FirstEnergy Powerhouse building. The event will be held in the river room which is located on the second floor at the far end of the building. After you park and you are walking towards the building you will see a red awning. This is the entrance to the river room and at that point you should see signs for the event. This will be a private event, please <a href=\"#event.buildLink(\'rsvp\')#\">RSVP</a> so we have a accurate guest list and an idea of how many people are coming. If you bring a toy or check we will give you 2 drink tickets. This will hopefully encourage everyone to <a href=\"#event.buildLink(\'donate\')#\">bring a donation</a> to this wonderful cause. If you don\'t bring a toy there will be a $10.00 donation cover charge.</p>\r\n\r\n<p><strong>Chinese Auction</strong></p>\r\n\r\n<p>The difference between a raffle and a Chinese auction is that in a raffle with multiple prizes, there is one \"hat\" from which names are drawn, but in a Chinese auction each prize has its own \"hat\". This allows ticket buyers to choose which prize to focus on, as opposed to having a first, second, third, etc. prize.</p>\r\n\r\n<p>We are looking for <a href=\"#event.buildLink(\'donate\')#\">raffle prize donations</a> to help make this event a smash. We have some ideas for raffle baskets but if you have ideas please let us know. You can find out what raffle prizes have already been donated by <a href=\"#event.buildLink(\'raffle\')#\">visiting the raffle page</a>.</p>\r\n\r\n<p><strong>Entertainment</strong></p>\r\n\r\n<p>The private party room will have a DJ making it impossible to be bored.</p>\r\n\r\n<p><strong>Photo Booth &amp; Photographer</strong></p>\r\n\r\n<p>We will have a photo booth for you to take pictures with your friends. We will also have a photographer walking around the event capturing everything.</p>\r\n','',8,'2013-10-07 22:51:47',0x00,1,2),
+ (69,'<p><strong>Who:</strong> Everyone is Welcome!<br />\r\n<strong>What:</strong> Toys for Shots Fundraiser/Holiday Party<br />\r\n<strong>Purpose:</strong> To raise funds and boxes of toys for the Marine\'s Toys for Tots Program<br />\r\n<strong>What to Wear:</strong> It\'s a holiday party! Dress to impress!<br />\r\n<strong>Where:</strong> Windows on the River<br />\r\n<strong>When:&nbsp;</strong>Saturday December 08, 2012 / 7:00 PM - 12:00 AM</p>\r\n\r\n<p>Toys for Shots is an annual fundraiser/holiday party. The primary purpose of this very special event is to collect as many new, un-giftwrapped toys as we can for the Marine\'s Toys for Tots program. A couple of representatives from the Marines will be present at the event to collect all the donated toys. In keeping with the true spirit of the holidays, your gift of a toy(s) can spread so much joy and hope to a deserving Cleveland area child this Christmas. Last year we were able to collect 16 huge boxes of toys and hope to break that record this year! The Marine\'s will be prepared with a large truck this year to fit all the toys we expect to donate!</p>\r\n\r\n<p>Why the name, \"Toys for Shots\"? We thought it would entice folks to go out and buy a toy if we offered a free drink in return for their toy (1 toy for 1 shot...\"Toys for Shots\"). The idea worked and we are happy to offer it again this year. Bring at least one new, un-giftwrapped toy and we will give you a free drink ticket.</p>\r\n\r\n<p>Although our purpose is to provide a bit of holiday happiness to children in need, this event is a holiday party! Expect to dance and have a good time, mingle with the crowd, have some holiday cheer, enjoy the food and participate in the raffle. We have an awesome lineup of baskets and items to be raffled off this year, so be sure to bring a few extra bucks to purchase the chinese raffle tickets!</p>\r\n\r\n<p>This will mark the fifth year for this event and we have some very high expectations. The event itself has grown each year in donations, gifts and attendance. This year the planning committee is made up of more than twenty people. Not only are we planning on delivering the best Toys for Shots event yet, but we expect this to grow into one of Northeast Ohio\'s biggest toy drives. We hope you will join us for an amazing night on December 08, 2012.</p>\r\n\r\n<p>Thank You</p>\r\n\r\n<div class=\"signature\">Daniel Vega</div>\r\n\r\n<p><br />\r\nToys for Shots Founder</p>\r\n\r\n<h2>Toys for Tots - Christmas Morning</h2>\r\n\r\n<div><iframe allowfullscreen=\"\" frameborder=\"0\" height=\"315\" src=\"//www.youtube.com/embed/5BxO_hPGE4g\" width=\"420\"></iframe></div>\r\n\r\n<p>&nbsp;</p>\r\n','',16,'2013-10-08 22:38:57',0x00,1,1),
+ (70,'<p>Thanks to my good friend Matt and a lot of work over a weekend we finally have our facebook page live.This is a great place to learn more about this years&nbsp;event as well as photos from past events.We would also love to your suggestion here or there. Please tell us what you liked about past events or what we can do to improve this years.</p>\r\n\r\n<p><img alt=\"\" src=\"/__media/blog/tfs_facebookpage.png\" /></p>\r\n','',4,'2013-10-08 23:11:40',0x00,1,13),
+ (71,'<p>Thanks to my good friend Matt and a lot of work over a weekend we finally have our facebook page live.This is a great place to learn more about this years&nbsp;event as well as photos from past events.We would also love to your suggestion here or there. Please tell us what you liked about past events or what we can do to improve this years.</p>\r\n\r\n<p><img alt=\"\" src=\"/__media/blog/tfs_facebookpage.png\" /></p>\r\n','',5,'2013-10-08 23:12:34',0x00,1,13),
+ (72,'<p>Thanks to my good friend Matt and a lot of work over a weekend we finally have our facebook page live.This is a great place to learn more about this years&nbsp;event as well as photos from past events.We would also love to your suggestion here or there. Please tell us what you liked about past events or what we can do to improve this years.</p>\r\n\r\n<p><a href=\"https://www.facebook.com/ToysForShots\" target=\"_blank\"><img alt=\"\" src=\"/__media/blog/tfs_facebookpage.png\" /></a></p>\r\n\r\n<p><a href=\"https://www.facebook.com/ToysForShots\" target=\"_blank\">Please Visit Our Facebook page here.</a></p>\r\n\r\n<p>&nbsp;</p>\r\n','',6,'2013-10-08 23:14:08',0x01,1,13),
+ (73,'<p><strong>Who:</strong> Everyone is Welcome!<br />\r\n<strong>What:</strong> Toys for Shots Fundraiser/Holiday Party<br />\r\n<strong>Purpose:</strong> To raise funds and boxes of toys for the Marine\'s Toys for Tots Program<br />\r\n<strong>What to Wear:</strong> It\'s a holiday party! Dress to impress!<br />\r\n<strong>Where:</strong> Windows on the River<br />\r\n<strong>When:&nbsp;</strong>Saturday December 08, 2012 / 7:00 PM - 12:00 AM</p>\r\n\r\n<p>Toys for Shots is an annual fundraiser/holiday party. The primary purpose of this very special event is to collect as many new, un-giftwrapped toys as we can for the Marine\'s Toys for Tots program. A couple of representatives from the Marines will be present at the event to collect all the donated toys. In keeping with the true spirit of the holidays, your gift of a toy(s) can spread so much joy and hope to a deserving Cleveland area child this Christmas. Last year we were able to collect 16 huge boxes of toys and hope to break that record this year! The Marine\'s will be prepared with a large truck this year to fit all the toys we expect to donate!</p>\r\n\r\n<p>Why the name, \"Toys for Shots\"? We thought it would entice folks to go out and buy a toy if we offered a free drink in return for their toy (1 toy for 1 shot...\"Toys for Shots\"). The idea worked and we are happy to offer it again this year. Bring at least one new, un-giftwrapped toy and we will give you a free drink ticket.</p>\r\n\r\n<p>Although our purpose is to provide a bit of holiday happiness to children in need, this event is a holiday party! Expect to dance and have a good time, mingle with the crowd, have some holiday cheer, enjoy the food and participate in the raffle. We have an awesome lineup of baskets and items to be raffled off this year, so be sure to bring a few extra bucks to purchase the chinese raffle tickets!</p>\r\n\r\n<p>This will mark the fifth year for this event and we have some very high expectations. The event itself has grown each year in donations, gifts and attendance. This year the planning committee is made up of more than twenty people. Not only are we planning on delivering the best Toys for Shots event yet, but we expect this to grow into one of Northeast Ohio\'s biggest toy drives. We hope you will join us for an amazing night on December 14, 2013.</p>\r\n\r\n<p>Thank You</p>\r\n\r\n<div class=\"signature\">Daniel Vega</div>\r\n\r\n<p><br />\r\nToys for Shots Founder</p>\r\n\r\n<h2>Toys for Tots - Christmas Morning</h2>\r\n\r\n<div><iframe allowfullscreen=\"\" frameborder=\"0\" height=\"315\" src=\"//www.youtube.com/embed/5BxO_hPGE4g\" width=\"420\"></iframe></div>\r\n\r\n<p>&nbsp;</p>\r\n','',17,'2013-10-15 22:12:08',0x00,1,1),
+ (74,'<p><strong>Who:</strong> Everyone is Welcome!<br />\r\n<strong>What:</strong> Toys for Shots Fundraiser/Holiday Party<br />\r\n<strong>Purpose:</strong> To raise funds and boxes of toys for the Marine\'s Toys for Tots Program<br />\r\n<strong>What to Wear:</strong> It\'s a holiday party! Dress to impress!<br />\r\n<strong>Where:</strong> Windows on the River<br />\r\n<strong>When:&nbsp;</strong>Saturday December 14, 2013 / 7:00 PM - 12:00 AM</p>\r\n\r\n<p>Toys for Shots is an annual fundraiser/holiday party. The primary purpose of this very special event is to collect as many new, un-giftwrapped toys as we can for the Marine\'s Toys for Tots program. A couple of representatives from the Marines will be present at the event to collect all the donated toys. In keeping with the true spirit of the holidays, your gift of a toy(s) can spread so much joy and hope to a deserving Cleveland area child this Christmas. Last year we were able to collect 16 huge boxes of toys and hope to break that record this year! The Marine\'s will be prepared with a large truck this year to fit all the toys we expect to donate!</p>\r\n\r\n<p>Why the name, \"Toys for Shots\"? We thought it would entice folks to go out and buy a toy if we offered a free drink in return for their toy (1 toy for 1 shot...\"Toys for Shots\"). The idea worked and we are happy to offer it again this year. Bring at least one new, un-giftwrapped toy and we will give you a free drink ticket.</p>\r\n\r\n<p>Although our purpose is to provide a bit of holiday happiness to children in need, this event is a holiday party! Expect to dance and have a good time, mingle with the crowd, have some holiday cheer, enjoy the food and participate in the raffle. We have an awesome lineup of baskets and items to be raffled off this year, so be sure to bring a few extra bucks to purchase the chinese raffle tickets!</p>\r\n\r\n<p>This will mark the fifth year for this event and we have some very high expectations. The event itself has grown each year in donations, gifts and attendance. This year the planning committee is made up of more than twenty people. Not only are we planning on delivering the best Toys for Shots event yet, but we expect this to grow into one of Northeast Ohio\'s biggest toy drives. We hope you will join us for an amazing night on December 14, 2013.</p>\r\n\r\n<p>Thank You</p>\r\n\r\n<div class=\"signature\">Daniel Vega</div>\r\n\r\n<p><br />\r\nToys for Shots Founder</p>\r\n\r\n<h2>Toys for Tots - Christmas Morning</h2>\r\n\r\n<div><iframe allowfullscreen=\"\" frameborder=\"0\" height=\"315\" src=\"//www.youtube.com/embed/5BxO_hPGE4g\" width=\"420\"></iframe></div>\r\n\r\n<p>&nbsp;</p>\r\n','',18,'2013-10-15 22:19:44',0x01,1,1),
+ (75,'<p><strong>Who:</strong> Anyone interested in having fun and helping out a good cause.<br />\r\n<strong>What:</strong> Toys for Tots Fundraiser Christmas Party.<br />\r\n<strong>Where:</strong> <a href=\"http://windowsontheriver.com\">Windows on the River</a><br />\r\n<strong>When:&nbsp;</strong>Saturday December 14, 2013 / 7:00 PM - 12:00 AM</p>\r\n\r\n<p>2000 Sycamore<br />\r\nCleveland OH 44113<br />\r\nPhone: 216.861.1445<br />\r\nWebsite: <a href=\"http://windowsontheriver.com\">Windows on the River</a></p>\r\n\r\n<p><strong>About The party</strong></p>\r\n\r\n<p>Windows on the River is located on the west bank of the Flats in downtown Cleveland, OH, on the second and third floors of the prestigious FirstEnergy Powerhouse building. The event will be held in the old Rock Bottom Brewery which is located on the second floor of the building. Enter the buildings main entrance where you will see signs for the Cleveland Aquarium and head to the 2nd floor. This will be a private event, please <a href=\"#event.buildLink(\'rsvp\')#\">RSVP</a> so we have a accurate guest list and an idea of how many people are coming. If you bring a toy or check we will give you 2 drink tickets. This will hopefully encourage everyone to <a href=\"#event.buildLink(\'donate\')#\">bring a donation</a> to this wonderful cause. If you don\'t bring a toy there will be a $10.00 donation cover charge.</p>\r\n\r\n<p><strong>Chinese Auction</strong></p>\r\n\r\n<p>The difference between a raffle and a Chinese auction is that in a raffle with multiple prizes, there is one \"hat\" from which names are drawn, but in a Chinese auction each prize has its own \"hat\". This allows ticket buyers to choose which prize to focus on, as opposed to having a first, second, third, etc. prize.</p>\r\n\r\n<p>We are looking for <a href=\"#event.buildLink(\'donate\')#\">raffle prize donations</a> to help make this event a smash. We have some ideas for raffle baskets but if you have ideas please let us know. You can find out what raffle prizes have already been donated by <a href=\"#event.buildLink(\'raffle\')#\">visiting the raffle page</a>.</p>\r\n\r\n<p><strong>Entertainment</strong></p>\r\n\r\n<p>The private party room will have a DJ making it impossible to be bored.</p>\r\n\r\n<p><strong>Photo Booth &amp; Photographer</strong></p>\r\n\r\n<p>We will have a photo booth for you to take pictures with your friends. We will also have a photographer walking around the event capturing everything.</p>\r\n','',9,'2013-10-15 22:23:40',0x01,1,2);
+/*!40000 ALTER TABLE `cb_contentversion` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_customfield`
+--
+
+DROP TABLE IF EXISTS `cb_customfield`;
+CREATE TABLE `cb_customfield` (
+  `customFieldID` int(11) NOT NULL AUTO_INCREMENT,
+  `key` varchar(255) NOT NULL,
+  `value` longtext NOT NULL,
+  `FK_contentID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`customFieldID`),
+  KEY `FK1844684991F58374` (`FK_contentID`),
+  KEY `idx_contentCustomFields` (`FK_contentID`),
+  CONSTRAINT `FK1844684991F58374` FOREIGN KEY (`FK_contentID`) REFERENCES `cb_content` (`contentID`)
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_customfield`
+--
+
+/*!40000 ALTER TABLE `cb_customfield` DISABLE KEYS */;
+INSERT INTO `cb_customfield` (`customFieldID`,`key`,`value`,`FK_contentID`) VALUES 
+ (17,'pageTitle','Make A Donation',3),
+ (26,'pageTitle','Contact Us',9),
+ (30,'pageTitle','Event Registration',7),
+ (35,'pageTitle','6th Annual Toys for Shots',1),
+ (36,'pageTitle','About The Party',2);
+/*!40000 ALTER TABLE `cb_customfield` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_customhtml`
+--
+
+DROP TABLE IF EXISTS `cb_customhtml`;
+CREATE TABLE `cb_customhtml` (
+  `contentID` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(200) NOT NULL,
+  `slug` varchar(200) NOT NULL,
+  `description` longtext,
+  `content` longtext NOT NULL,
+  `createdDate` datetime NOT NULL,
+  `cache` bit(1) NOT NULL DEFAULT b'1',
+  `cacheTimeout` int(11) DEFAULT '0',
+  `cacheLastAccessTimeout` int(11) DEFAULT '0',
+  `markup` varchar(100) NOT NULL DEFAULT 'HTML',
+  `isPublished` bit(1) NOT NULL DEFAULT b'1',
+  `publishedDate` datetime DEFAULT NULL,
+  `expireDate` datetime DEFAULT NULL,
+  `FK_authorID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`contentID`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `FK113E927CAA6AC0EA` (`FK_authorID`),
+  KEY `idx_cachetimeout` (`cacheTimeout`),
+  KEY `idx_cache` (`cache`),
+  KEY `idx_customHTML_slug` (`slug`),
+  KEY `idx_published` (`isPublished`,`publishedDate`),
+  KEY `idx_publishedDate` (`publishedDate`),
+  KEY `idx_cachelastaccesstimeout` (`cacheLastAccessTimeout`),
+  KEY `idx_createdDate` (`createdDate`),
+  KEY `idx_expireDate` (`expireDate`),
+  KEY `idx_search` (`isPublished`),
+  CONSTRAINT `FK113E927CAA6AC0EA` FOREIGN KEY (`FK_authorID`) REFERENCES `cb_author` (`authorID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_customhtml`
+--
+
+/*!40000 ALTER TABLE `cb_customhtml` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cb_customhtml` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_entry`
+--
+
+DROP TABLE IF EXISTS `cb_entry`;
+CREATE TABLE `cb_entry` (
+  `contentID` int(11) NOT NULL,
+  `excerpt` longtext,
+  PRIMARY KEY (`contentID`),
+  KEY `FK141674927FFF6A7` (`contentID`),
+  CONSTRAINT `FK141674927FFF6A7` FOREIGN KEY (`contentID`) REFERENCES `cb_content` (`contentID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_entry`
+--
+
+/*!40000 ALTER TABLE `cb_entry` DISABLE KEYS */;
+INSERT INTO `cb_entry` (`contentID`,`excerpt`) VALUES 
+ (13,'');
+/*!40000 ALTER TABLE `cb_entry` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_form`
+--
+
+DROP TABLE IF EXISTS `cb_form`;
+CREATE TABLE `cb_form` (
+  `formID` int(11) NOT NULL AUTO_INCREMENT,
+  `slug` varchar(200) NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `directions` longtext,
+  `submitMessage` longtext NOT NULL,
+  `emailTo` longtext,
+  `cssID` varchar(250) DEFAULT NULL,
+  `cssClass` varchar(250) DEFAULT NULL,
+  `useCaptcha` bit(1) NOT NULL DEFAULT b'1',
+  `createdDate` datetime NOT NULL,
+  PRIMARY KEY (`formID`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `idx_slug` (`slug`),
+  KEY `idx_name` (`name`),
+  KEY `idx_usecaptcha` (`useCaptcha`),
+  KEY `idx_createdDate` (`createdDate`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_form`
+--
+
+/*!40000 ALTER TABLE `cb_form` DISABLE KEYS */;
+INSERT INTO `cb_form` (`formID`,`slug`,`name`,`directions`,`submitMessage`,`emailTo`,`cssID`,`cssClass`,`useCaptcha`,`createdDate`) VALUES 
+ (2,'contact','Contact','Please feel free to use the form below to send us your comments, suggestions or feedback regarding the toys for shots event.','Thank you for contacting us, we will get back to you soon.','danvega@gmail.com','frmContactForm','',0x01,'2013-09-22 10:41:44');
+/*!40000 ALTER TABLE `cb_form` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_formfield`
+--
+
+DROP TABLE IF EXISTS `cb_formfield`;
+CREATE TABLE `cb_formfield` (
+  `fieldID` int(11) NOT NULL AUTO_INCREMENT,
+  `fieldOrder` int(11) DEFAULT '0',
+  `name` varchar(200) NOT NULL,
+  `label` varchar(200) NOT NULL,
+  `typeID` int(11) DEFAULT '0',
+  `isRequired` bit(1) NOT NULL DEFAULT b'1',
+  `maxLength` int(11) DEFAULT '50',
+  `helpText` longtext,
+  `cssID` varchar(250) DEFAULT NULL,
+  `cssClass` varchar(250) DEFAULT NULL,
+  `defaultValue` longtext NOT NULL,
+  `FK_formID` int(11) NOT NULL,
+  PRIMARY KEY (`fieldID`),
+  KEY `FKAF95AB6D453727D` (`FK_formID`),
+  KEY `idx_label` (`label`),
+  KEY `idx_name` (`name`),
+  KEY `idx_isRequired` (`isRequired`),
+  CONSTRAINT `FKAF95AB6D453727D` FOREIGN KEY (`FK_formID`) REFERENCES `cb_form` (`formID`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_formfield`
+--
+
+/*!40000 ALTER TABLE `cb_formfield` DISABLE KEYS */;
+INSERT INTO `cb_formfield` (`fieldID`,`fieldOrder`,`name`,`label`,`typeID`,`isRequired`,`maxLength`,`helpText`,`cssID`,`cssClass`,`defaultValue`,`FK_formID`) VALUES 
+ (5,1,'name','Full Name',1,0x01,100,'','','span4','',2),
+ (6,2,'email','Email Address',1,0x01,100,'','','span4','',2),
+ (7,3,'phone','Phone Number',1,0x00,50,'','','span4','',2),
+ (8,4,'comments','Comments',2,0x01,4000,'We are still searching for donations & volunteers so please let us know if you can help with either.','','span4 comments','',2);
+/*!40000 ALTER TABLE `cb_formfield` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_formfieldoption`
+--
+
+DROP TABLE IF EXISTS `cb_formfieldoption`;
+CREATE TABLE `cb_formfieldoption` (
+  `fieldOptionID` int(11) NOT NULL AUTO_INCREMENT,
+  `order` int(11) DEFAULT '0',
+  `displayValue` longtext NOT NULL,
+  `actualValue` longtext NOT NULL,
+  `isChecked` bit(1) NOT NULL DEFAULT b'1',
+  `FK_fieldID` int(11) NOT NULL,
+  PRIMARY KEY (`fieldOptionID`),
+  KEY `FK45EB6ECBAB2326F5` (`FK_fieldID`),
+  KEY `idx_isChecked` (`isChecked`),
+  CONSTRAINT `FK45EB6ECBAB2326F5` FOREIGN KEY (`FK_fieldID`) REFERENCES `cb_formfield` (`fieldID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_formfieldoption`
+--
+
+/*!40000 ALTER TABLE `cb_formfieldoption` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cb_formfieldoption` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_formsubmission`
+--
+
+DROP TABLE IF EXISTS `cb_formsubmission`;
+CREATE TABLE `cb_formsubmission` (
+  `formSubmissionID` int(11) NOT NULL AUTO_INCREMENT,
+  `formData` longtext,
+  `submissionIP` varchar(20) NOT NULL,
+  `submissionDate` datetime NOT NULL,
+  `FK_formID` int(11) NOT NULL,
+  PRIMARY KEY (`formSubmissionID`),
+  KEY `FK1AA63710D453727D` (`FK_formID`),
+  KEY `idx_submissionDate` (`submissionDate`),
+  KEY `idx_submissionIP` (`submissionIP`),
+  CONSTRAINT `FK1AA63710D453727D` FOREIGN KEY (`FK_formID`) REFERENCES `cb_form` (`formID`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_formsubmission`
+--
+
+/*!40000 ALTER TABLE `cb_formsubmission` DISABLE KEYS */;
+INSERT INTO `cb_formsubmission` (`formSubmissionID`,`formData`,`submissionIP`,`submissionDate`,`FK_formID`) VALUES 
+ (1,'{\"NAME\":\"Dan Vega\",\"PHONE\":\"\",\"FIELDNAMES\":\"_RETURNTO,FORMID,NAME,EMAIL,PHONE,COMMENTS,CAPTCHACODE\",\"COMMENTS\":\"test test test\",\"FORMID\":2,\"EMAIL\":\"danvega@gmail.com\",\"_RETURNTO\":\"\\/index.cfm\\/contact\",\"CAPTCHACODE\":\"P66PM\"}','127.0.0.1','2013-09-22 10:55:13',2);
+/*!40000 ALTER TABLE `cb_formsubmission` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_module`
+--
+
+DROP TABLE IF EXISTS `cb_module`;
+CREATE TABLE `cb_module` (
+  `moduleID` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `version` varchar(255) DEFAULT NULL,
+  `entryPoint` varchar(255) DEFAULT NULL,
+  `author` varchar(255) DEFAULT NULL,
+  `webURL` longtext,
+  `forgeBoxSlug` varchar(255) DEFAULT NULL,
+  `description` longtext,
+  `isActive` bit(1) NOT NULL DEFAULT b'0',
+  PRIMARY KEY (`moduleID`),
+  KEY `idx_active` (`isActive`),
+  KEY `idx_entryPoint` (`entryPoint`),
+  KEY `idx_moduleName` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_module`
+--
+
+/*!40000 ALTER TABLE `cb_module` DISABLE KEYS */;
+INSERT INTO `cb_module` (`moduleID`,`name`,`title`,`version`,`entryPoint`,`author`,`webURL`,`forgeBoxSlug`,`description`,`isActive`) VALUES 
+ (2,'ckcodemirror','CKCodeMirror','1.0','ckcodemirror','Ortus Solutions, Corp','http://www.ortussolutions.com','','Adds CodeMirror support to CKEditor 4',0x01),
+ (4,'contentbox-formbuilder','contentbox-formbuilder','1.0','cbFormBuilder','Computer Know How','http://www.compknowhow.com','','A cool form builder for content box',0x01);
+/*!40000 ALTER TABLE `cb_module` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_page`
+--
+
+DROP TABLE IF EXISTS `cb_page`;
+CREATE TABLE `cb_page` (
+  `contentID` int(11) NOT NULL,
+  `layout` varchar(200) DEFAULT NULL,
+  `mobileLayout` varchar(200) DEFAULT NULL,
+  `order` int(11) DEFAULT '0',
+  `showInMenu` bit(1) NOT NULL DEFAULT b'1',
+  `excerpt` longtext,
+  PRIMARY KEY (`contentID`),
+  KEY `FK21B2F26F9636A2E2` (`contentID`),
+  KEY `idx_showInMenu` (`showInMenu`),
+  CONSTRAINT `FK21B2F26F9636A2E2` FOREIGN KEY (`contentID`) REFERENCES `cb_content` (`contentID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_page`
+--
+
+/*!40000 ALTER TABLE `cb_page` DISABLE KEYS */;
+INSERT INTO `cb_page` (`contentID`,`layout`,`mobileLayout`,`order`,`showInMenu`,`excerpt`) VALUES 
+ (1,'home','',0,0x01,''),
+ (2,'two_column_SR','',0,0x01,''),
+ (3,'two_column_SR','',0,0x01,''),
+ (5,'two_column_SR','',0,0x01,''),
+ (6,'one_column','',0,0x01,''),
+ (7,'one_column','',0,0x01,''),
+ (8,'two_column_SR','',0,0x01,''),
+ (9,'two_column_SR','',0,0x01,'');
+/*!40000 ALTER TABLE `cb_page` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_permission`
+--
+
+DROP TABLE IF EXISTS `cb_permission`;
+CREATE TABLE `cb_permission` (
+  `permissionID` int(11) NOT NULL AUTO_INCREMENT,
+  `permission` varchar(255) NOT NULL,
+  `description` longtext,
+  PRIMARY KEY (`permissionID`),
+  UNIQUE KEY `permission` (`permission`)
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_permission`
+--
+
+/*!40000 ALTER TABLE `cb_permission` DISABLE KEYS */;
+INSERT INTO `cb_permission` (`permissionID`,`permission`,`description`) VALUES 
+ (1,'PAGES_ADMIN','Ability to manage content pages, default is view only'),
+ (2,'EDITORS_EDITOR_SELECTOR','Ability to change the editor to another registered online editor'),
+ (3,'WIDGET_ADMIN','Ability to manage widgets, default is view only'),
+ (4,'TOOLS_IMPORT','Ability to import data into ContentBox'),
+ (5,'GLOBALHTML_ADMIN','Ability to manage the system\'s global HTML content used on layouts'),
+ (6,'PAGES_EDITOR','Ability to manage content pages but not publish pages'),
+ (7,'SYSTEM_TAB','Access to the ContentBox System tools'),
+ (8,'SYSTEM_UPDATES','Ability to view and apply ContentBox updates'),
+ (9,'CONTENTSTORE_ADMIN','Ability to manage the content store, default is view only'),
+ (10,'CONTENTBOX_ADMIN','Access to the enter the ContentBox administrator console'),
+ (11,'RELOAD_MODULES','Ability to reload modules'),
+ (12,'MODULES_ADMIN','Ability to manage ContentBox Modules'),
+ (13,'COMMENTS_ADMIN','Ability to manage comments, default is view only'),
+ (14,'AUTHOR_ADMIN','Ability to manage authors, default is view only'),
+ (15,'PERMISSIONS_ADMIN','Ability to manage permissions, default is view only'),
+ (16,'MEDIAMANAGER_ADMIN','Ability to manage the system\'s media manager'),
+ (17,'SYSTEM_RAW_SETTINGS','Access to the ContentBox raw geek settings panel'),
+ (18,'CATEGORIES_ADMIN','Ability to manage categories, default is view only'),
+ (19,'EDITORS_DISPLAY_OPTIONS','Ability to view the content display options panel'),
+ (20,'EDITORS_HTML_ATTRIBUTES','Ability to view the content HTML attributes panel'),
+ (21,'EMAIL_TEMPLATE_ADMIN','Ability to manage the system\'s email templates'),
+ (22,'TOOLS_EXPORT','Ability to export data from ContentBox'),
+ (23,'FORGEBOX_ADMIN','Ability to manage ForgeBox installations and connectivity.'),
+ (24,'LAYOUT_ADMIN','Ability to manage layouts, default is view only'),
+ (25,'EDITORS_CATEGORIES','Ability to view the content categories panel'),
+ (26,'EDITORS_MODIFIERS','Ability to view the content modifiers panel'),
+ (27,'CONTENTSTORE_EDITOR','Ability to manage content store elements but not publish them'),
+ (28,'ENTRIES_ADMIN','Ability to manage blog entries, default is view only'),
+ (29,'VERSIONS_ROLLBACK','Ability to rollback content versions'),
+ (30,'EDITORS_CACHING','Ability to view the content caching panel'),
+ (31,'ROLES_ADMIN','Ability to manage roles, default is view only'),
+ (32,'SYSTEM_SAVE_CONFIGURATION','Ability to update global configuration data'),
+ (33,'ENTRIES_EDITOR','Ability to manage blog entries but not publish entries'),
+ (34,'VERSIONS_DELETE','Ability to delete past content versions'),
+ (35,'SECURITYRULES_ADMIN','Ability to manage the system\'s security rules, default is view only'),
+ (36,'MEDIAMANAGER_LIBRARY_SWITCHER','Ability to switch media manager libraries for management'),
+ (37,'CUSTOMHTML_EDITOR','Ability to manage custom HTML elements but not publish them');
+/*!40000 ALTER TABLE `cb_permission` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_role`
+--
+
+DROP TABLE IF EXISTS `cb_role`;
+CREATE TABLE `cb_role` (
+  `roleID` int(11) NOT NULL AUTO_INCREMENT,
+  `role` varchar(255) NOT NULL,
+  `description` longtext,
+  PRIMARY KEY (`roleID`),
+  UNIQUE KEY `role` (`role`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_role`
+--
+
+/*!40000 ALTER TABLE `cb_role` DISABLE KEYS */;
+INSERT INTO `cb_role` (`roleID`,`role`,`description`) VALUES 
+ (1,'Editor','A ContentBox editor'),
+ (2,'Administrator','A ContentBox Administrator');
+/*!40000 ALTER TABLE `cb_role` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_rolepermissions`
+--
+
+DROP TABLE IF EXISTS `cb_rolepermissions`;
+CREATE TABLE `cb_rolepermissions` (
+  `FK_roleID` int(11) NOT NULL,
+  `FK_permissionID` int(11) NOT NULL,
+  KEY `FKDCCC1A4E9724FA40` (`FK_roleID`),
+  KEY `FKDCCC1A4E37C1A3F2` (`FK_permissionID`),
+  CONSTRAINT `FKDCCC1A4E37C1A3F2` FOREIGN KEY (`FK_permissionID`) REFERENCES `cb_permission` (`permissionID`),
+  CONSTRAINT `FKDCCC1A4E9724FA40` FOREIGN KEY (`FK_roleID`) REFERENCES `cb_role` (`roleID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_rolepermissions`
+--
+
+/*!40000 ALTER TABLE `cb_rolepermissions` DISABLE KEYS */;
+INSERT INTO `cb_rolepermissions` (`FK_roleID`,`FK_permissionID`) VALUES 
+ (1,13),
+ (1,27),
+ (1,6),
+ (1,18),
+ (1,33),
+ (1,24),
+ (1,5),
+ (1,16),
+ (1,29),
+ (1,10),
+ (1,19),
+ (1,26),
+ (1,30),
+ (1,25),
+ (1,20),
+ (1,2),
+ (2,1),
+ (2,2),
+ (2,3),
+ (2,5),
+ (2,4),
+ (2,7),
+ (2,6),
+ (2,8),
+ (2,9),
+ (2,12),
+ (2,11),
+ (2,10),
+ (2,13),
+ (2,14),
+ (2,15),
+ (2,16),
+ (2,17),
+ (2,18),
+ (2,19),
+ (2,20),
+ (2,21),
+ (2,22),
+ (2,23),
+ (2,24),
+ (2,25),
+ (2,26),
+ (2,27),
+ (2,28),
+ (2,29),
+ (2,30),
+ (2,31),
+ (2,33),
+ (2,32),
+ (2,34),
+ (2,35);
+/*!40000 ALTER TABLE `cb_rolepermissions` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_securityrule`
+--
+
+DROP TABLE IF EXISTS `cb_securityrule`;
+CREATE TABLE `cb_securityrule` (
+  `ruleID` int(11) NOT NULL AUTO_INCREMENT,
+  `whitelist` varchar(255) DEFAULT NULL,
+  `securelist` varchar(255) NOT NULL,
+  `roles` varchar(255) DEFAULT NULL,
+  `permissions` longtext,
+  `redirect` longtext NOT NULL,
+  `useSSL` bit(1) DEFAULT b'0',
+  `order` int(11) NOT NULL DEFAULT '0',
+  `match` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`ruleID`)
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_securityrule`
+--
+
+/*!40000 ALTER TABLE `cb_securityrule` DISABLE KEYS */;
+INSERT INTO `cb_securityrule` (`ruleID`,`whitelist`,`securelist`,`roles`,`permissions`,`redirect`,`useSSL`,`order`,`match`) VALUES 
+ (1,'','^contentbox-admin:modules\\..*','','MODULES_ADMIN','cbadmin/security/login',0x00,1,'event'),
+ (2,'','^contentbox-admin:mediamanager\\..*','','MEDIAMANAGER_ADMIN','cbadmin/security/login',0x00,1,'event'),
+ (3,'','^contentbox-admin:versions\\.(remove)','','VERSIONS_DELETE','cbadmin/security/login',0x00,1,'event'),
+ (4,'','^contentbox-admin:versions\\.(rollback)','','VERSIONS_ROLLBACK','cbadmin/security/login',0x00,1,'event'),
+ (5,'','^contentbox-admin:emailtemplates\\..*','','EMAIL_TEMPLATE_ADMIN','cbadmin/security/login',0x00,2,'event'),
+ (6,'','^contentbox-admin:widgets\\.(remove|upload|edit|save|create|doCreate)$','','WIDGET_ADMIN','cbadmin/security/login',0x00,2,'event'),
+ (7,'','^contentbox-admin:tools\\.(importer|doImport)','','TOOLS_IMPORT','cbadmin/security/login',0x00,3,'event'),
+ (8,'','^contentbox-admin:(settings|permissions|roles|securityRules)\\..*','','SYSTEM_TAB','cbadmin/security/login',0x00,4,'event'),
+ (9,'','^contentbox-admin:settings\\.save','','SYSTEM_SAVE_CONFIGURATION','cbadmin/security/login',0x00,5,'event'),
+ (10,'','^contentbox-admin:settings\\.(raw|saveRaw|flushCache|flushSingletons|mappingDump|viewCached|remove)','','SYSTEM_RAW_SETTINGS','cbadmin/security/login',0x00,6,'event'),
+ (11,'','^contentbox-admin:securityRules\\.(remove|save|changeOrder|apply)','','SECURITYRULES_ADMIN','cbadmin/security/login',0x00,7,'event'),
+ (12,'','^contentbox-admin:roles\\.(remove|removePermission|save|savePermission)','','ROLES_ADMIN','cbadmin/security/login',0x00,8,'event'),
+ (13,'','^contentbox-admin:permissions\\.(remove|save)','','PERMISSIONS_ADMIN','cbadmin/security/login',0x00,9,'event'),
+ (14,'','^contentbox-admin:dashboard\\.reload','','RELOAD_MODULES','cbadmin/security/login',0x00,10,'event'),
+ (15,'','^contentbox-admin:pages\\.(changeOrder|remove)','','PAGES_ADMIN','cbadmin/security/login',0x00,11,'event'),
+ (16,'','^contentbox-admin:layouts\\.(remove|upload|rebuildRegistry|activate)','','LAYOUT_ADMIN','cbadmin/security/login',0x00,12,'event'),
+ (17,'','^contentbox-admin:entries\\.(quickPost|remove)','','ENTRIES_ADMIN','cbadmin/security/login',0x00,13,'event'),
+ (18,'','^contentbox-admin:contentStore\\.(editor|remove|save)','','CONTENTSTORE_ADMIN','cbadmin/security/login',0x00,14,'event'),
+ (19,'','^contentbox-admin:comments\\.(doStatusUpdate|editor|moderate|remove|save|saveSettings)','','COMMENTS_ADMIN','cbadmin/security/login',0x00,15,'event'),
+ (20,'','^contentbox-admin:categories\\.(remove|save)','','CATEGORIES_ADMIN','cbadmin/security/login',0x00,16,'event'),
+ (21,'','^contentbox-admin:authors\\.(remove|removePermission|savePermission)','','AUTHOR_ADMIN','cbadmin/security/login',0x00,17,'event'),
+ (22,'^contentbox-admin:security\\.','^contentbox-admin:.*','','CONTENTBOX_ADMIN','cbadmin/security/login',0x00,18,'event'),
+ (23,'','^contentbox-filebrowser:.*','','MEDIAMANAGER_ADMIN','cbadmin/security/login',0x00,19,'event'),
+ (24,'','^contentbox-admin:(authors|categories|permissions|roles|settings|pages|entries|contentStore|securityrules)\\.importAll$','','TOOLS_IMPORT','cbadmin/security/login',0x00,20,'event'),
+ (25,'','^contentbox-admin:(authors|categories|permissions|roles|settings|pages|entries|contentStore|securityrules)\\.(export|exportAll)$','','TOOLS_EXPORT','cbadmin/security/login',0x00,20,'event');
+/*!40000 ALTER TABLE `cb_securityrule` ENABLE KEYS */;
+
+
+--
+-- Definition of table `cb_setting`
+--
+
+DROP TABLE IF EXISTS `cb_setting`;
+CREATE TABLE `cb_setting` (
+  `settingID` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `value` longtext NOT NULL,
+  PRIMARY KEY (`settingID`)
+) ENGINE=InnoDB AUTO_INCREMENT=115 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cb_setting`
+--
+
+/*!40000 ALTER TABLE `cb_setting` DISABLE KEYS */;
+INSERT INTO `cb_setting` (`settingID`,`name`,`value`) VALUES 
+ (1,'cb_comments_moderation_blockedlist',''),
+ (2,'cb_paging_maxrows','20'),
+ (3,'cb_comments_captcha','true'),
+ (4,'cb_site_name','Toys For Shots'),
+ (5,'cb_comments_urltranslations','true'),
+ (6,'cb_editors_ckeditor_extraplugins','cbKeyBinding,cbWidgets,cbLinks,cbEntryLinks,cbContentStore,cbIpsumLorem,wsc,mediaembed,insertpre'),
+ (7,'cb_media_uploadify_customOptions',''),
+ (8,'cb_site_mail_server','localhost'),
+ (9,'cb_dashboard_recentPages','5'),
+ (10,'cb_html_preEntryDisplay',''),
+ (11,'cb_comments_enabled','true'),
+ (12,'cb_site_mail_password',''),
+ (13,'cb_admin_theme','contentbox-default'),
+ (14,'cb_site_mail_ssl','false'),
+ (15,'cb_site_ssl','false'),
+ (16,'cb_html_beforeContent',''),
+ (17,'cb_dashboard_recentComments','5'),
+ (18,'cb_versions_max_history',''),
+ (19,'cb_media_provider_caching','true'),
+ (20,'cb_site_keywords',''),
+ (21,'cb_contentstore_caching','true'),
+ (22,'cb_html_preIndexDisplay',''),
+ (23,'cb_content_cachingTimeout','60'),
+ (24,'cb_comments_moderation','true'),
+ (25,'cb_media_uploadify_sizeLimit','0'),
+ (26,'cb_html_beforeHeadEnd',''),
+ (27,'cb_notify_entry','true'),
+ (28,'cb_site_email','danvega@gmail.com'),
+ (29,'cb_site_maintenance_message','<h1>This site is down for maintenance.<br /> Please check back again soon.</h1>'),
+ (30,'cb_media_acceptMimeTypes',''),
+ (31,'cb_comments_notifyemails',''),
+ (32,'cb_dashboard_recentcontentstore','5'),
+ (33,'cb_media_allowDownloads','true'),
+ (34,'cb_html_postArchivesDisplay',''),
+ (35,'cb_comments_moderation_blacklist',''),
+ (36,'cb_salt','759A289C363DE13ABC8CA06BC1A9850ECB67DE02E9B407FD4BC22D8EC66E7258DBE3F793D64AC98BDF06B8FAEF47F84E14AC372E0D1485CFF6BB2A39E172E2FF'),
+ (37,'cb_admin_ssl','false'),
+ (38,'cb_site_outgoingEmail','danvega@gmail.com'),
+ (39,'cb_media_uplodify_fileExt','*.*;'),
+ (40,'cb_comments_moderation_whitelist','true'),
+ (41,'cb_media_quickViewWidth','400'),
+ (42,'cb_search_maxResults','20'),
+ (43,'cb_notify_author','true'),
+ (44,'cb_site_blog_entrypoint','blog'),
+ (45,'cb_media_allowUploads','true'),
+ (46,'cb_content_uiexport','true'),
+ (47,'cb_page_excerpts','true'),
+ (48,'cb_html_preCommentForm',''),
+ (49,'cb_media_createFolders','true'),
+ (50,'cb_site_mail_tls','false'),
+ (51,'cb_media_html5uploads_maxFileSize','100'),
+ (52,'cb_versions_commit_mandatory','false'),
+ (53,'cb_comments_moderation_notify','true'),
+ (54,'cb_site_tagline',''),
+ (55,'cb_site_mail_smtp','2525'),
+ (56,'cb_site_mail_username',''),
+ (57,'cb_comments_notify','true'),
+ (58,'cb_rss_cachingTimeoutIdle','15'),
+ (59,'cb_content_caching','false'),
+ (60,'cb_search_adapter','contentbox.model.search.DBSearch'),
+ (61,'cb_site_maintenance','false'),
+ (62,'cb_html_afterSideBar',''),
+ (63,'cb_html_postCommentForm',''),
+ (64,'cb_rss_caching','true'),
+ (65,'cb_paging_maxRSSComments','10'),
+ (66,'cb_media_uplodify_fileDesc','All Files'),
+ (67,'cb_site_description',''),
+ (68,'cb_paging_maxentries','10'),
+ (69,'cb_html_postEntryDisplay',''),
+ (70,'cb_media_uploadify_allowMulti','true'),
+ (71,'cb_html_afterBodyStart','	<!-- javascript sdk -->\r\n	<div id=\"fb-root\"></div>\r\n	<script>(function(d, s, id) {\r\n	  var js, fjs = d.getElementsByTagName(s)[0];\r\n	  if (d.getElementById(id)) return;\r\n	  js = d.createElement(s); js.id = id;\r\n	  js.src = \"//connect.facebook.net/en_US/all.js#xfbml=1&appId=103071546451871\";\r\n	  fjs.parentNode.insertBefore(js, fjs);\r\n	}(document, \'script\', \'facebook-jssdk\'));\r\n	</script>'),
+ (72,'cb_html_afterFooter',''),
+ (73,'cb_site_layout','tfs2013'),
+ (74,'cb_html_postIndexDisplay',''),
+ (75,'cb_gravatar_display','true'),
+ (76,'cb_editors_ckeditor_excerpt_toolbar','[\r\n    { \"name\": \"document\",    \"items\" : [ \"Source\",\"ShowBlocks\" ] },\r\n    { \"name\": \"basicstyles\", \"items\" : [ \"Bold\",\"Italic\",\"Underline\",\"Strike\",\"Subscript\",\"Superscript\"] },\r\n    { \"name\": \"paragraph\",   \"items\" : [ \"NumberedList\",\"BulletedList\",\"-\",\"Outdent\",\"Indent\",\"CreateDiv\"] },\r\n    { \"name\": \"links\",       \"items\" : [ \"Link\",\"Unlink\",\"Anchor\" ] },\r\n    { \"name\": \"insert\",      \"items\" : [ \"Image\",\"Flash\",\"Table\",\"HorizontalRule\",\"Smiley\",\"SpecialChar\" ] },\r\n    { \"name\": \"contentbox\",  \"items\" : [ \"MediaEmbed\",\"cbIpsumLorem\",\"cbWidgets\",\"cbContentStore\",\"cbLinks\",\"cbEntryLinks\" ] }\r\n]'),
+ (77,'cb_html_preArchivesDisplay',''),
+ (78,'cb_html_prePageDisplay',''),
+ (79,'cb_media_provider','CFContentMediaProvider'),
+ (80,'cb_site_disable_blog','false'),
+ (81,'cb_editors_markup','HTML'),
+ (82,'cb_rss_maxEntries','10'),
+ (83,'cb_site_homepage','home'),
+ (84,'cb_editors_ckeditor_toolbar','[\r\n{ \"name\": \"document\",    \"items\" : [ \"Source\",\"-\",\"Maximize\",\"ShowBlocks\" ] },\r\n{ \"name\": \"clipboard\",   \"items\" : [ \"Cut\",\"Copy\",\"Paste\",\"PasteText\",\"PasteFromWord\",\"-\",\"Undo\",\"Redo\" ] },\r\n{ \"name\": \"editing\",     \"items\" : [ \"Find\",\"Replace\",\"SpellChecker\"] },\r\n{ \"name\": \"forms\",       \"items\" : [ \"Form\", \"Checkbox\", \"Radio\", \"TextField\", \"Textarea\", \"Select\", \"Button\",\"HiddenField\" ] },\r\n\"/\",\r\n{ \"name\": \"basicstyles\", \"items\" : [ \"Bold\",\"Italic\",\"Underline\",\"Strike\",\"Subscript\",\"Superscript\",\"-\",\"RemoveFormat\" ] },\r\n{ \"name\": \"paragraph\",   \"items\" : [ \"NumberedList\",\"BulletedList\",\"-\",\"Outdent\",\"Indent\",\"-\",\"Blockquote\",\"CreateDiv\",\"-\",\"JustifyLeft\",\"JustifyCenter\",\"JustifyRight\",\"JustifyBlock\",\"-\",\"BidiLtr\",\"BidiRtl\" ] },\r\n{ \"name\": \"links\",       \"items\" : [ \"Link\",\"Unlink\",\"Anchor\" ] },\r\n\"/\",\r\n{ \"name\": \"styles\",      \"items\" : [ \"Styles\",\"Format\" ] },\r\n{ \"name\": \"colors\",      \"items\" : [ \"TextColor\",\"BGColor\" ] },\r\n{ \"name\": \"insert\",      \"items\" : [ \"Image\",\"Flash\",\"Table\",\"HorizontalRule\",\"Smiley\",\"SpecialChar\",\"Iframe\",\"InsertPre\"] },\r\n{ \"name\": \"contentbox\",  \"items\" : [ \"MediaEmbed\",\"cbIpsumLorem\",\"cbWidgets\",\"cbContentStore\",\"cbLinks\",\"cbEntryLinks\" ] }\r\n]'),
+ (85,'cb_comments_maxDisplayChars','500'),
+ (86,'cb_rss_cachingTimeout','60'),
+ (87,'cb_html_beforeSideBar',''),
+ (88,'cb_content_cacheName','TEMPLATE'),
+ (89,'cb_dashboard_newsfeed_count','5'),
+ (90,'cb_dashboard_newsfeed','http://www.gocontentbox.org/blog/rss'),
+ (91,'cb_html_afterContent',''),
+ (92,'cb_rss_maxComments','10'),
+ (93,'cb_media_directoryRoot','/contentbox/content'),
+ (94,'cb_media_html5uploads_maxFiles','25'),
+ (95,'cb_admin_quicksearch_max','5'),
+ (96,'cb_media_allowDelete','true'),
+ (97,'cb_dashboard_recentEntries','5'),
+ (98,'cb_rss_cacheName','TEMPLATE'),
+ (99,'cb_html_beforeBodyEnd',''),
+ (100,'cb_paging_bandgap','5'),
+ (101,'cb_gravatar_rating','PG'),
+ (102,'cb_notify_page','true'),
+ (103,'cb_html_postPageDisplay','<div class=\"fb-like\" data-href=\"http://www.toysforshots.com/\" data-width=\"600\" data-show-faces=\"true\" data-send=\"true\"></div>'),
+ (104,'cb_editors_default','ckeditor'),
+ (105,'cb_content_cachingTimeoutIdle','15'),
+ (106,'cb_comments_whoisURL','http://whois.arin.net/ui/query.do?q'),
+ (107,'cb_entry_caching','true'),
+ (108,'cb_active','true'),
+ (109,'cb_layout_default_googleAnalyticsAPI',''),
+ (110,'cbox-ckcodemirror','{\"THEME\":\"xq-dark\"}'),
+ (111,'cb_layout_tfs2013_Title','My Awesome Title'),
+ (113,'form_builder','{\"RECAPTCHA\":{\"privateKey\":\"\",\"publicKey\":\"\"},\"HTMLHELPER\":{\"groupWrapperClass\":\"control-group\",\"helpWrapper\":\"p\",\"helpWrapperClass\":\"help-block\",\"label\":\"label\",\"groupWrapper\":\"div\",\"labelWrapperClass\":\"\",\"wrapperClass\":\"controls\",\"wrapper\":\"div\",\"labelClass\":\"control-label\",\"labelWrapper\":\"\"},\"CAPTCHATYPE\":\"CF\"}'),
+ (114,'cb_enc_key','5wOo3uDPdy22CpooN4uq/w==');
+/*!40000 ALTER TABLE `cb_setting` ENABLE KEYS */;
+
+
+
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

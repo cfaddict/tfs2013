@@ -207,7 +207,7 @@
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 60.0,
+		"height": 375.0,
 		"selected_items":
 		[
 			[
@@ -740,15 +740,33 @@
 	},
 	"file_history":
 	[
+		"/C/www/toysforshots/config/Application.cfm",
+		"/C/www/toysforshots_2012/config/Coldbox.cfc",
+		"/C/www/toysforshots_2012/layouts/Layout.Main.cfm",
+		"/C/www/toysforshots/.rockstarapps",
+		"/C/www/toysforshots/config/tfs_new",
+		"/C/www/toysforshots/modules/contentbox-ui/handlers/media.cfc",
+		"/C/www/toysforshots/config/Coldbox.cfc",
+		"/C/www/toysforshots/config/CacheBox.cfc",
+		"/C/www/toysforshots/config/Routes.cfm",
+		"/C/www/toysforshots/config/WireBox.cfc",
+		"/C/www/toysforshots/README.md",
+		"/C/www/toysforshots/modules/contentbox-admin/handlers/authors.cfc",
+		"/C/www/toysforshots/readme.txt",
+		"/C/www/toysforshots/modules/contentbox/layouts/tfs2013/layouts/home.cfm",
+		"/C/www/toysforshots/modules/contentbox/layouts/tfs2013/layouts/blog.cfm",
+		"/C/www/toysforshots/modules/contentbox/layouts/tfs2013/layouts/one_column.cfm",
+		"/C/www/toysforshots/modules/contentbox/layouts/tfs2013/views/_sidebar.cfm",
+		"/C/www/toysforshots/modules/cbMediaService/ModuleConfig.cfc",
+		"/C/www/toysforshots/coldbox/system/aop/MethodInterceptor.cfc",
+		"/C/www/toysforshots/modules/cbMediaService/aop/MediaService.cfc",
+		"/C/www/toysforshots/modules/contentbox/modules/contentbox-formbuilder/ModuleConfig.cfc",
 		"/C/www/toysforshots/modules/mediafix/aop/MediaService.cfc",
 		"/C/www/toysforshots/modules/mediafix/ModuleConfig.cfc",
 		"/C/www/toysforshots/modules/contentbox-ui/ModuleConfig.cfc",
 		"/C/www/toysforshots/modules/contentbox-admin/ModuleConfig.cfc",
 		"/C/www/toysforshots/.htaccess",
-		"/C/www/toysforshots/config/Coldbox.cfc",
-		"/C/www/toysforshots/config/Routes.cfm",
 		"/C/www/toysforshots/modules/contentbox/layouts/tfs2013/views/_head.cfm",
-		"/C/www/toysforshots/modules/contentbox/layouts/tfs2013/layouts/home.cfm",
 		"/C/www/facebook/albums.cfm",
 		"/C/www/facebook/index.cfm",
 		"/C/www/facebook/index.html",
@@ -756,7 +774,6 @@
 		"/C/www/toysforshots/modules/contentbox/layouts/tfs2013/layouts/two_column_SR.cfm",
 		"/C/www/toysforshots/modules/contentbox/plugins/CBHelper.cfc",
 		"/C/www/toysforshots_2012/views/contact/index.cfm",
-		"/C/www/toysforshots/modules/contentbox/layouts/tfs2013/layouts/one_column.cfm",
 		"/C/www/toysforshots/modules/contentbox/layouts/tfs2013/views/entry.cfm",
 		"/C/www/toysforshots/handlers/Contact.cfc",
 		"/C/www/toysforshots/views/contact/index.cfm",
@@ -764,10 +781,7 @@
 		"/C/www/toysforshots/model/Contact.cfc",
 		"/C/www/toysforshots/model/Entity.cfc",
 		"/C/www/toysforshots_2012/model/Contact.cfc",
-		"/C/www/toysforshots/config/WireBox.cfc",
 		"/C/www/toysforshots/modules/contentbox/layouts/TrulySimple/layouts/blog.cfm",
-		"/C/www/toysforshots/modules/contentbox/layouts/tfs2013/layouts/blog.cfm",
-		"/C/www/toysforshots/modules/contentbox/layouts/tfs2013/views/_sidebar.cfm",
 		"/C/www/toysforshots/modules/contentbox/layouts/tfs2013/templates/entry.cfm",
 		"/C/www/toysforshots/modules/contentbox/layouts/tfs2013/views/archives.cfm",
 		"/C/www/toysforshots/modules/contentbox/layouts/tfs2013/views/search.cfm",
@@ -796,7 +810,6 @@
 		"/C/www/toysforshots_2012/views/thankyou/index.cfm",
 		"/C/www/toysforshots_2012/views/raffle/index.cfm",
 		"/C/www/toysforshots_2012/views/home.cfm",
-		"/C/www/toysforshots_2012/layouts/Layout.Main.cfm",
 		"/C/www/toysforshots_2012/views/_partials/sponsors.cfm",
 		"/C/www/toysforshots/modules/contentbox/layouts/TrulySimple/layouts/pages.cfm",
 		"/C/www/toysforshots/modules/contentbox/layouts/TrulySimple/views/_menu.cfm",
@@ -854,20 +867,7 @@
 		"/C/websites/rex/branches/mainline/migration/Application/_extensions/_components/_XML/_Quote/cfc_XML_Quote.cfc",
 		"/c/users/dvega/appdata/local/temp/sublime-svn-1379359787/SVN",
 		"/C/websites/rex/branches/mainline/entities/policy/policy.cfc",
-		"/C/websites/rex/branches/mainline/migration/Services/User/usersService.cfc",
-		"/C/websites/rex/branches/mainline/entities/user/userSession.cfc",
-		"/C/websites/rex/branches/mainline/migration/Services/windstorm/windstormRuleSetService.cfc",
-		"/C/websites/rex/branches/mainline/migration/Resource/controllers/windstormDeductible.cfc",
-		"/C/websites/rex/branches/mainline/entities/user/user.cfc",
-		"/c/users/dvega/appdata/local/temp/sublime-svn-1379358670/SVN",
-		"/C/websites/rex/branches/mainline/migration/Resource/views/windstormDeductible/edit.cfm",
-		"/C/websites/rex/branches/mainline/entities/pricing/boPricing/markel/boMinimumWindstormPercentageDeductible.cfc",
-		"/c/users/dvega/appdata/local/temp/sublime-svn-1379356732/SVN",
-		"/c/users/dvega/appdata/local/temp/sublime-svn-1379356724/SVN",
-		"/C/websites/rex/branches/mainline/migration/RexUnderwriting/app/services/UserService.cfc",
-		"/C/websites/rex/branches/mainline/migration/Mura/requirements/fusebox5/errortemplates/fusebox.invalidAccessModifier.cfm",
-		"/C/websites/rex/branches/mainline/migration/Application/PolicyMgmt/submission/Quote/Pricing/Comments.cfm",
-		"/C/websites/rex/branches/mainline/migration/DB/Punisher/1stComp/2013-08-16_PU-8_CaShortRate.sql"
+		"/C/websites/rex/branches/mainline/migration/Services/User/usersService.cfc"
 	],
 	"find":
 	{
@@ -1130,6 +1130,14 @@
 		"height": 0.0,
 		"selected_items":
 		[
+			[
+				"media.cfc",
+				"toysforshots/modules/contentbox-ui/handlers/media.cfc"
+			],
+			[
+				"methodin",
+				"toysforshots/coldbox/system/aop/MethodInterceptor.cfc"
+			],
 			[
 				".",
 				"toysforshots/.htaccess"
@@ -1633,14 +1641,6 @@
 			[
 				"policyservicefacto",
 				"migration/Services/Policy/policyServiceFactory.cfc"
-			],
-			[
-				"skyn",
-				"migration/Application/assets/javascript/skynet/skynet.global.js"
-			],
-			[
-				"quote.cfc",
-				"migration/agency/controllers/quote.cfc"
 			]
 		],
 		"width": 0.0
@@ -1657,6 +1657,6 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 343.0,
+	"side_bar_width": 286.0,
 	"status_bar_visible": true
 }
