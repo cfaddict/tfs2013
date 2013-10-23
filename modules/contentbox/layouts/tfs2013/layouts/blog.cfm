@@ -3,6 +3,9 @@
 <html lang= "en">
 <head>
 	#cb.quickView("_head")#
+
+	<link href="#cb.layoutRoot()#/includes/css/lightbox.css" rel="stylesheet" />
+	<script src="#cb.layoutRoot()#/includes/js/lightbox-2.6.min.js"></script>
 </head>
 <body>
 
